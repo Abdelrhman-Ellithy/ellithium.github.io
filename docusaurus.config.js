@@ -22,7 +22,7 @@ const config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'ellithium', // Usually your GitHub org/user name.
+  organizationName: 'Abdelrhman-Ellithy', // Usually your GitHub org/user name.
   projectName: 'ellithium.github.io', // Usually your repo name.
 
   onBrokenLinks: 'warn',
