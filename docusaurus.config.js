@@ -15,17 +15,13 @@ const config = {
   favicon: 'img/logo.png',
 
   // Set the production url of your site here
-  url: 'https://ellithium.github.io',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
-  
-  trailingSlash: false,
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'Abdelrhman-Ellithy', // Usually your GitHub org/user name.
-  projectName: 'ellithium.github.io', // Usually your repo name.
+  url: 'https://ellithium.github.io', 
+  baseUrl: '/',                       
 
+  organizationName: 'Abdelrhman-Ellithy',
+  projectName: 'ellithium.github.io',
+
+  trailingSlash: false,
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
 
