@@ -10,7 +10,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Ellithium',
+  title: 'Ellithium User Guide',
   tagline: 'A powerful Java-based test automation framework',
   favicon: 'img/logo.png',
 
@@ -53,6 +53,11 @@ const config = {
     ({
       // Replace with your project's social card
       image: 'img/logo.png',
+      colorMode: {
+        defaultMode: 'dark',
+        disableSwitch: true,
+        respectPrefersColorScheme: false,
+      },
       docs: {
         sidebar: {
           hideable: false,
