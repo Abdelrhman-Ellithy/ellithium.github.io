@@ -16,7 +16,7 @@ const config = {
 
   // Set the production url of your site here
   url: 'https://ellithium.github.io', 
-  baseUrl: '/',                       
+  baseUrl: '/ellithium.github.io/',                       
 
   organizationName: 'Abdelrhman-Ellithy',
   projectName: 'ellithium.github.io',
