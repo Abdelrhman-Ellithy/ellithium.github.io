@@ -65,32 +65,32 @@ These methods wait for specific element conditions:
 
 ```java
 // Wait for element states
-WebElement visible = actions.elements().waitForElementToBeVisible(By.id("loading"));
-WebElement clickable = actions.elements().waitForElementToBeClickable(By.id("button"));
-WebElement present = actions.elements().waitForElementPresence(By.id("element"));
+WebElement visible = actions.waits().waitForElementToBeVisible(By.id("loading"));
+WebElement clickable = actions.waits().waitForElementToBeClickable(By.id("button"));
+WebElement present = actions.waits().waitForElementPresence(By.id("element"));
 
 // Wait for element to disappear
-actions.elements().waitForElementToDisappear(By.id("loadingSpinner"));
+actions.waits().waitForElementToDisappear(By.id("loadingSpinner"));
 
 // Wait for element selection state
-actions.elements().waitForElementToBeSelected(By.id("checkbox"));
-actions.elements().waitForElementSelectionStateToBe(By.id("checkbox"), true);
+actions.waits().waitForElementToBeSelected(By.id("checkbox"));
+actions.waits().waitForElementSelectionStateToBe(By.id("checkbox"), true);
 
 // Wait for text conditions
-actions.elements().waitForTextToBePresentInElement(By.id("message"), "Success");
-actions.elements().waitForTextToBePresentInElementValue(By.id("field"), "value");
+actions.waits().waitForTextToBePresentInElement(By.id("message"), "Success");
+actions.waits().waitForTextToBePresentInElementValue(By.id("field"), "value");
 
 // Wait for element attribute conditions
-actions.elements().waitForElementAttributeToBe(By.id("status"), "class", "active");
-actions.elements().waitForElementAttributeContains(By.id("status"), "class", "success");
+actions.waits().waitForElementAttributeToBe(By.id("status"), "class", "active");
+actions.waits().waitForElementAttributeContains(By.id("status"), "class", "success");
 
 // Wait for number of elements
-actions.elements().waitForNumberOfElementsToBe(By.cssSelector(".result"), 5);
-actions.elements().waitForNumberOfElementsToBeMoreThan(By.cssSelector(".item"), 3);
-actions.elements().waitForNumberOfElementsToBeLessThan(By.cssSelector(".item"), 10);
+actions.waits().waitForNumberOfElementsToBe(By.cssSelector(".result"), 5);
+actions.waits().waitForNumberOfElementsToBeMoreThan(By.cssSelector(".item"), 3);
+actions.waits().waitForNumberOfElementsToBeLessThan(By.cssSelector(".item"), 10);
 
 // Wait for visibility of multiple elements
-List<WebElement> elements = actions.elements().waitForVisibilityOfAllElements(By.cssSelector(".item"));
+List<WebElement> elements = actions.waits().waitForVisibilityOfAllElements(By.cssSelector(".item"));
 ```
 
 ### Finding Elements
@@ -143,13 +143,13 @@ All wait methods accept optional timeout and polling parameters:
 
 ```java
 // Default timeout and polling
-actions.elements().waitForElementToBeVisible(By.id("result"));
+actions.waits().waitForElementToBeVisible(By.id("result"));
 
 // Custom timeout (5 seconds)
-actions.elements().waitForElementToBeVisible(By.id("result"), 5);
+actions.waits().waitForElementToBeVisible(By.id("result"), 5);
 
 // Custom timeout (5 seconds) and polling interval (100ms)
-actions.elements().waitForElementToBeVisible(By.id("result"), 5, 100);
+actions.waits().waitForElementToBeVisible(By.id("result"), 5, 100);
 ```
 
 The default timeout and polling values can be configured in the Ellithium properties file:
