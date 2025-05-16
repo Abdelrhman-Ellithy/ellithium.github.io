@@ -121,51 +121,51 @@ const config = {
             items: [
               {
                 label: 'All Utilities',
-                to: '/utilities',
+                to: '/ellithium.github.io/utilities',
               },
               {
                 label: 'JSON Helper',
-                to: '/utilities/json-helper',
+                to: '/ellithium.github.io/utilities/json-helper',
               },
               {
                 label: 'Excel Helper',
-                to: '/utilities/excel-helper',
+                to: '/ellithium.github.io/utilities/excel-helper',
               },
               {
                 label: 'CSV Helper',
-                to: '/utilities/csv-helper',
+                to: '/ellithium.github.io/utilities/csv-helper',
               },
               {
                 label: 'Text Helper',
-                to: '/utilities/text-helper',
+                to: '/ellithium.github.io/utilities/text-helper',
               },
               {
                 label: 'PDF Helper',
-                to: '/utilities/pdf-helper',
+                to: '/ellithium.github.io/utilities/pdf-helper',
               },
               {
                 label: 'Property Helper',
-                to: '/utilities/property-helper',
+                to: '/ellithium.github.io/utilities/property-helper',
               },
               {
                 label: 'JAR Extractor',
-                to: '/utilities/jar-extractor',
+                to: '/ellithium.github.io/utilities/jar-extractor',
               },
               {
                 label: 'Command Executor',
-                to: '/utilities/command-executor',
+                to: '/ellithium.github.io/utilities/command-executor',
               },
               {
                 label: 'Test Data Generator',
-                to: '/utilities/test-data-generator',
+                to: '/ellithium.github.io/utilities/test-data-generator',
               },
               {
                 label: 'Assertion Executor',
-                to: '/utilities/assertion-executor',
+                to: '/ellithium.github.io/utilities/assertion-executor',
               },
               {
                 label: 'Configuration Properties',
-                to: '/utilities/property-files',
+                to: '/ellithium.github.io/utilities/property-files',
               },
             ],
           },
@@ -249,23 +249,23 @@ const config = {
             items: [
               {
                 label: 'JSON Helper',
-                to: '/utilities/json-helper',
+                to: '/ellithium.github.io/utilities/json-helper',
               },
               {
                 label: 'Test Data Generator',
-                to: '/utilities/test-data-generator',
+                to: '/ellithium.github.io/utilities/test-data-generator',
               },
               {
                 label: 'Assertion Executor',
-                to: '/utilities/assertion-executor',
+                to: '/ellithium.github.io/utilities/assertion-executor',
               },
               {
                 label: 'Configuration Properties',
-                to: '/utilities/property-files',
+                to: '/ellithium.github.io/utilities/property-files',
               },
               {
                 label: 'All Utilities',
-                to: '/utilities',
+                to: '/ellithium.github.io/utilities',
               },
             ],
           },
