@@ -20,7 +20,7 @@ Add Ellithium to your project by including this dependency in your `pom.xml`:
 <dependency>
     <groupId>io.github.abdelrhman-ellithy</groupId>
     <artifactId>ellithium</artifactId>
-    <version>2.0.4</version>
+    <version>2.1.0</version> // check the latest version on the repo
 </dependency>
 ```
 
@@ -33,7 +33,7 @@ Your `pom.xml` should include these essential configurations:
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <Ellithiumversion>2.0.4</Ellithiumversion>
+    <version>2.1.0</version> // check the latest version on the repo
 </properties>
 
 <build>

@@ -116,10 +116,12 @@ try {
 ### MongoDB
 
 ```java
-// Connect to MongoDB
+// Connect to MongoDB with caching configuration
 MongoDatabaseProvider mongo = new MongoDatabaseProvider(
     "mongodb://localhost:27017",
-    "test_db"
+    "test_db",
+    30,  // Cache TTL in minutes
+    1000 // Maximum cache size
 );
 
 // Insert document
@@ -128,28 +130,38 @@ Document user = new Document("name", "John Doe")
     .append("age", 30);
 mongo.insertDocument("users", user);
 
-// Find documents
-Document query = new Document("age", new Document("$gt", 25));
-List<Document> users = mongo.findDocuments("users", query);
+// Get document by ID
+Optional<Document> userDoc = mongo.getDocument("users", "user123");
 
 // Update document
-Document filter = new Document("email", "john@example.com");
-Document update = new Document("$set", new Document("status", "active"));
-mongo.updateDocument("users", filter, update);
+Bson update = new Document("$set", new Document("status", "active"));
+mongo.updateDocument("users", "user123", update);
 
 // Delete document
-mongo.deleteDocument("users", new Document("status", "inactive"));
+mongo.deleteDocument("users", "user123");
+
+// Create index
+mongo.createIndex("users", "email", true); // unique index on email field
+
+// Health check
+boolean isHealthy = mongo.isHealthy();
+
+// Cache management
+mongo.clearCache("query_key");
+mongo.clearAllCaches();
 ```
 
 ### Couchbase
 
 ```java
-// Connect to Couchbase
+// Connect to Couchbase with caching configuration
 CouchbaseDatabaseProvider couchbase = new CouchbaseDatabaseProvider(
     "couchbase://localhost",
     "username",
     "password",
-    "default"
+    "default",
+    30,  // Cache TTL in minutes
+    1000 // Maximum cache size
 );
 
 // Insert document
@@ -165,13 +177,24 @@ JsonObject result = couchbase.getDocument("user::1234");
 // Query documents
 String query = "SELECT * FROM default WHERE type = 'user'";
 List<JsonObject> users = couchbase.query(query);
+
+// Health check
+boolean isHealthy = couchbase.isHealthy();
+
+// Cache management
+couchbase.clearCache("query_key");
+couchbase.clearAllCaches();
 ```
 
 ### Redis
 
 ```java
-// Connect to Redis
-RedisDatabaseProvider redis = new RedisDatabaseProvider("redis://localhost:6379");
+// Connect to Redis with caching configuration
+RedisDatabaseProvider redis = new RedisDatabaseProvider(
+    "redis://localhost:6379",
+    30,  // Cache TTL in minutes
+    1000 // Maximum cache size
+);
 
 // Set key-value
 redis.set("user:1234:name", "John Doe");
@@ -189,25 +212,44 @@ redis.delete("user:1234:name");
 // Work with lists
 redis.listPush("recent_users", "user:1234");
 List<String> users = redis.listRange("recent_users", 0, -1);
+
+// Health check
+boolean isHealthy = redis.isHealthy();
+
+// Cache management
+redis.clearCache("query_key");
+redis.clearAllCaches();
 ```
 
 ## Caching Mechanisms
 
-Ellithium implements intelligent caching for database operations to improve performance:
+Ellithium implements intelligent caching for database operations to improve performance. The caching system is built on top of Caffeine cache and provides the following features:
+
+- Configurable cache TTL (Time To Live)
+- Configurable maximum cache size
+- Automatic cache invalidation
+- Per-key cache clearing
+- Global cache clearing
+
+All NoSQL database providers implement the `NoSQLDatabaseProvider` interface which includes these caching methods:
 
 ```java
-// Enable caching (enabled by default)
-mysql.setCacheEnabled(true);
+// Clear cache for specific key
+databaseProvider.clearCache("query_key");
 
-// Set cache expiration time (in seconds)
-mysql.setCacheExpirationTime(300); // 5 minutes
+// Clear all cached results
+databaseProvider.clearAllCaches();
 
-// Clear cache
-mysql.clearCache();
+// Add result to cache
+databaseProvider.addToCache("query_key", result);
 
-// Execute cached query (results will be cached)
-ResultSet users = mysql.executeQuery("SELECT * FROM users");
+// Get cached result
+Object cachedResult = databaseProvider.getFromCache("query_key");
+```
 
-// Force fresh execution (bypass cache)
-ResultSet freshUsers = mysql.executeQueryNoCache("SELECT * FROM users");
-``` 
+The caching system is enabled by default and can be configured during provider initialization. The cache configuration includes:
+
+- Cache TTL (Time To Live) in minutes
+- Maximum number of entries in the cache
+- Automatic eviction of expired entries
+- Thread-safe operations 

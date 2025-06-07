@@ -17,7 +17,10 @@ src/test/java/
 └── DB/
     ├── SQLiteDBTest.java          # Basic SQLite database tests
     ├── SQLiteDBAdvancedTest.java  # Advanced SQLite database operations
-    └── SQLiteDBEdgeCasesTest.java # Edge case handling
+    ├── SQLiteDBEdgeCasesTest.java # Edge case handling
+    ├── MongoTest.java            # MongoDB tests
+    ├── CouchbaseTest.java        # Couchbase tests
+    └── RedisTest.java            # Redis tests
 ```
 
 ## Basic SQLite Tests Example
@@ -528,4 +531,358 @@ Ellithium supports a variety of database types, including:
 - Couchbase
 - Redis
 
-For more database testing examples, including NoSQL databases, check out the complete [source code](https://github.com/Abdelrhman-Ellithy/Ellithium/tree/main/src/test/java/DB) of the Ellithium project. 
+For more database testing examples, including NoSQL databases, check out the complete [source code](https://github.com/Abdelrhman-Ellithy/Ellithium/tree/main/src/test/java/DB) of the Ellithium project.
+
+## MongoDB Tests Example
+
+Here's an example of MongoDB database operations with caching:
+
+```java
+package DB;
+
+import Ellithium.Utilities.assertion.AssertionExecutor;
+import Ellithium.core.DB.MongoDatabaseProvider;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import org.bson.Document;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import java.util.concurrent.TimeUnit;
+
+public class MongoTest {
+    private MongoDatabaseProvider mongoProvider;
+    private static final String DB_NAME = "test_db";
+    private static final String COLLECTION_NAME = "users";
+
+    @BeforeClass
+    public void setUp() {
+        // Initialize MongoDB provider with caching
+        mongoProvider = new MongoDatabaseProvider(
+            "mongodb://localhost:27017",
+            DB_NAME,
+            30,  // Cache TTL in minutes
+            1000 // Maximum cache size
+        );
+
+        // Create test collection and indexes
+        mongoProvider.createIndex(COLLECTION_NAME, "email", true);
+        mongoProvider.createIndex(COLLECTION_NAME, "age", false);
+
+        // Insert test data
+        insertTestData();
+    }
+
+    private void insertTestData() {
+        // Clear existing data
+        mongoProvider.deleteDocument(COLLECTION_NAME, "user1");
+        mongoProvider.deleteDocument(COLLECTION_NAME, "user2");
+
+        // Insert test users
+        Document user1 = new Document("_id", "user1")
+            .append("name", "John Doe")
+            .append("email", "john@example.com")
+            .append("age", 30);
+
+        Document user2 = new Document("_id", "user2")
+            .append("name", "Jane Smith")
+            .append("email", "jane@example.com")
+            .append("age", 25);
+
+        mongoProvider.insertDocument(COLLECTION_NAME, user1);
+        mongoProvider.insertDocument(COLLECTION_NAME, user2);
+    }
+
+    @Test
+    public void testDocumentOperations() {
+        // Get document by ID
+        Optional<Document> user = mongoProvider.getDocument(COLLECTION_NAME, "user1");
+        
+        // Verify document exists and has correct data
+        AssertionExecutor.hard.assertTrue(user.isPresent(), "User should exist");
+        AssertionExecutor.hard.assertEquals(user.get().getString("name"), "John Doe");
+        AssertionExecutor.hard.assertEquals(user.get().getString("email"), "john@example.com");
+        AssertionExecutor.hard.assertEquals(user.get().getInteger("age"), 30);
+    }
+
+    @Test
+    public void testUpdateDocument() {
+        // Update user age
+        Document update = new Document("$set", new Document("age", 31));
+        mongoProvider.updateDocument(COLLECTION_NAME, "user1", update);
+
+        // Verify update
+        Optional<Document> updatedUser = mongoProvider.getDocument(COLLECTION_NAME, "user1");
+        AssertionExecutor.hard.assertTrue(updatedUser.isPresent(), "User should exist after update");
+        AssertionExecutor.hard.assertEquals(updatedUser.get().getInteger("age"), 31);
+    }
+
+    @Test
+    public void testCaching() {
+        // Execute query (will be cached)
+        Object result1 = mongoProvider.executeQuery("{ find: 'users', filter: { age: { $gt: 25 } } }");
+        
+        // Execute same query (should use cache)
+        Object result2 = mongoProvider.executeQuery("{ find: 'users', filter: { age: { $gt: 25 } } }");
+        
+        // Clear cache for specific query
+        mongoProvider.clearCache("{ find: 'users', filter: { age: { $gt: 25 } } }");
+        
+        // Clear all caches
+        mongoProvider.clearAllCaches();
+    }
+
+    @Test
+    public void testHealthCheck() {
+        // Check database health
+        boolean isHealthy = mongoProvider.isHealthy();
+        AssertionExecutor.hard.assertTrue(isHealthy, "Database should be healthy");
+    }
+
+    @AfterClass
+    public void tearDown() {
+        // Close connection
+        if (mongoProvider != null) {
+            mongoProvider.closeConnection();
+        }
+    }
+}
+```
+
+## Couchbase Tests Example
+
+Here's an example of Couchbase database operations with caching:
+
+```java
+package DB;
+
+import Ellithium.Utilities.assertion.AssertionExecutor;
+import Ellithium.core.DB.CouchbaseDatabaseProvider;
+import com.couchbase.client.java.json.JsonObject;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import java.util.List;
+
+public class CouchbaseTest {
+    private CouchbaseDatabaseProvider couchbaseProvider;
+    private static final String BUCKET_NAME = "default";
+
+    @BeforeClass
+    public void setUp() {
+        // Initialize Couchbase provider with caching
+        couchbaseProvider = new CouchbaseDatabaseProvider(
+            "couchbase://localhost",
+            "username",
+            "password",
+            BUCKET_NAME,
+            30,  // Cache TTL in minutes
+            1000 // Maximum cache size
+        );
+
+        // Insert test data
+        insertTestData();
+    }
+
+    private void insertTestData() {
+        // Clear existing data
+        couchbaseProvider.delete("user::1");
+        couchbaseProvider.delete("user::2");
+
+        // Insert test users
+        JsonObject user1 = JsonObject.create()
+            .put("type", "user")
+            .put("name", "John Doe")
+            .put("email", "john@example.com")
+            .put("age", 30);
+
+        JsonObject user2 = JsonObject.create()
+            .put("type", "user")
+            .put("name", "Jane Smith")
+            .put("email", "jane@example.com")
+            .put("age", 25);
+
+        couchbaseProvider.upsertDocument("user::1", user1);
+        couchbaseProvider.upsertDocument("user::2", user2);
+    }
+
+    @Test
+    public void testDocumentOperations() {
+        // Get document
+        JsonObject user = couchbaseProvider.getDocument("user::1");
+        
+        // Verify document data
+        AssertionExecutor.hard.assertNotNull(user, "User should exist");
+        AssertionExecutor.hard.assertEquals(user.getString("name"), "John Doe");
+        AssertionExecutor.hard.assertEquals(user.getString("email"), "john@example.com");
+        AssertionExecutor.hard.assertEquals(user.getInt("age"), 30);
+    }
+
+    @Test
+    public void testQuery() {
+        // Query users
+        String query = "SELECT * FROM default WHERE type = 'user' AND age > 25";
+        List<JsonObject> users = couchbaseProvider.query(query);
+        
+        // Verify query results
+        AssertionExecutor.hard.assertEquals(users.size(), 1, "Should find one user over 25");
+        AssertionExecutor.hard.assertEquals(users.get(0).getString("name"), "John Doe");
+    }
+
+    @Test
+    public void testCaching() {
+        // Execute query (will be cached)
+        Object result1 = couchbaseProvider.executeQuery("SELECT * FROM default WHERE type = 'user'");
+        
+        // Execute same query (should use cache)
+        Object result2 = couchbaseProvider.executeQuery("SELECT * FROM default WHERE type = 'user'");
+        
+        // Clear cache for specific query
+        couchbaseProvider.clearCache("SELECT * FROM default WHERE type = 'user'");
+        
+        // Clear all caches
+        couchbaseProvider.clearAllCaches();
+    }
+
+    @Test
+    public void testHealthCheck() {
+        // Check database health
+        boolean isHealthy = couchbaseProvider.isHealthy();
+        AssertionExecutor.hard.assertTrue(isHealthy, "Database should be healthy");
+    }
+
+    @AfterClass
+    public void tearDown() {
+        // Close connection
+        if (couchbaseProvider != null) {
+            couchbaseProvider.closeConnection();
+        }
+    }
+}
+```
+
+## Redis Tests Example
+
+Here's an example of Redis database operations with caching:
+
+```java
+package DB;
+
+import Ellithium.Utilities.assertion.AssertionExecutor;
+import Ellithium.core.DB.RedisDatabaseProvider;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import java.util.List;
+
+public class RedisTest {
+    private RedisDatabaseProvider redisProvider;
+
+    @BeforeClass
+    public void setUp() {
+        // Initialize Redis provider with caching
+        redisProvider = new RedisDatabaseProvider(
+            "redis://localhost:6379",
+            30,  // Cache TTL in minutes
+            1000 // Maximum cache size
+        );
+
+        // Insert test data
+        insertTestData();
+    }
+
+    private void insertTestData() {
+        // Clear existing data
+        redisProvider.delete("user:1:name");
+        redisProvider.delete("user:1:email");
+        redisProvider.delete("user:2:name");
+        redisProvider.delete("user:2:email");
+
+        // Insert test users
+        redisProvider.set("user:1:name", "John Doe");
+        redisProvider.set("user:1:email", "john@example.com");
+        redisProvider.set("user:2:name", "Jane Smith");
+        redisProvider.set("user:2:email", "jane@example.com");
+    }
+
+    @Test
+    public void testKeyValueOperations() {
+        // Get value
+        String name = redisProvider.get("user:1:name");
+        
+        // Verify value
+        AssertionExecutor.hard.assertEquals(name, "John Doe", "Name should match");
+        
+        // Check if key exists
+        boolean exists = redisProvider.exists("user:1:name");
+        AssertionExecutor.hard.assertTrue(exists, "Key should exist");
+    }
+
+    @Test
+    public void testExpiration() {
+        // Set key with expiration
+        redisProvider.set("temp:key", "value", 60); // 60 seconds
+        
+        // Verify key exists
+        boolean exists = redisProvider.exists("temp:key");
+        AssertionExecutor.hard.assertTrue(exists, "Key should exist before expiration");
+        
+        // Set expiration on existing key
+        boolean expired = redisProvider.expire("user:1:name", 3600); // 1 hour
+        AssertionExecutor.hard.assertTrue(expired, "Expiration should be set");
+    }
+
+    @Test
+    public void testListOperations() {
+        // Clear list
+        redisProvider.delete("recent_users");
+        
+        // Push items to list
+        redisProvider.listPush("recent_users", "user:1");
+        redisProvider.listPush("recent_users", "user:2");
+        
+        // Get list range
+        List<String> users = redisProvider.listRange("recent_users", 0, -1);
+        
+        // Verify list contents
+        AssertionExecutor.hard.assertEquals(users.size(), 2, "List should have 2 items");
+        AssertionExecutor.hard.assertEquals(users.get(0), "user:2", "First item should be user:2");
+        AssertionExecutor.hard.assertEquals(users.get(1), "user:1", "Second item should be user:1");
+    }
+
+    @Test
+    public void testCaching() {
+        // Execute query (will be cached)
+        Object result1 = redisProvider.executeQuery("GET user:1:name");
+        
+        // Execute same query (should use cache)
+        Object result2 = redisProvider.executeQuery("GET user:1:name");
+        
+        // Clear cache for specific query
+        redisProvider.clearCache("GET user:1:name");
+        
+        // Clear all caches
+        redisProvider.clearAllCaches();
+    }
+
+    @Test
+    public void testHealthCheck() {
+        // Check database health
+        boolean isHealthy = redisProvider.isHealthy();
+        AssertionExecutor.hard.assertTrue(isHealthy, "Database should be healthy");
+    }
+
+    @AfterClass
+    public void tearDown() {
+        // Close connection
+        if (redisProvider != null) {
+            redisProvider.closeConnection();
+        }
+    }
+} 
