@@ -34,6 +34,8 @@ From this single point, you can access all the specialized interaction classes:
 | [Key Press Actions](/interactions/key-press-actions) | `actions.keyPress()` | Keyboard interactions |
 | [Select Actions](/interactions/select-actions) | `actions.select()` | Dropdown operations |
 | [Screen Recorder Actions](/interactions/screen-recorder-actions) | `screenRecorderActions` | Video recording of test sessions |
+| [Android Actions](/interactions/android-actions) | `actions.androidActions()` | Android-specific mobile gestures |
+| [iOS Actions](/interactions/ios-actions) | `actions.iosActions()` | iOS-specific mobile gestures |
 
 For a more detailed overview with code examples, see the [Interactions Overview](/interactions/interactions) page.
 
@@ -62,4 +64,26 @@ actions.elements().waitForElementToBeVisible(By.id("welcomeMessage"));
 
 ## Web vs. Mobile Interactions
 
-Most interaction classes work identically for both web and mobile testing, allowing you to use the same API across different platforms. For mobile-specific functionality, check the [Mobile Testing](/mobile-testing) documentation. 
+Most interaction classes work identically for both web and mobile testing, allowing you to use the same API across different platforms. 
+
+### Mobile-Specific Actions
+
+For mobile testing, you can access platform-specific gesture actions:
+
+```java
+// Android-specific gestures
+if (driver instanceof AppiumDriver) {
+    actions.androidActions().swipe(element, "left", 0.75f, 0.5f);
+    actions.androidActions().pinch(element, 2.0f);
+    actions.androidActions().longClickGesture(element, 2000);
+}
+
+// iOS-specific gestures
+if (driver instanceof AppiumDriver) {
+    actions.iosActions().swipe("left", element);
+    actions.iosActions().pinch(element, 2.0f);
+    actions.iosActions().longPress(element, 2000);
+}
+```
+
+For more detailed mobile testing information, check the [Mobile Testing](/mobile-testing) documentation. 

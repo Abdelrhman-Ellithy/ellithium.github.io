@@ -50,7 +50,6 @@ const sidebars = {
           label: 'Interactions',
           items: [
             'interactions/index',
-            'interactions/interactions',
             'interactions/element-actions',
             'interactions/javascript-actions',
             'interactions/alert-actions',
@@ -61,7 +60,9 @@ const sidebars = {
             'interactions/window-actions',
             'interactions/key-press-actions',
             'interactions/select-actions',
-            'interactions/screen-recorder-actions'
+            'interactions/screen-recorder-actions',
+            'interactions/android-actions',
+            'interactions/ios-actions'
           ]
         },
         {
@@ -83,6 +84,16 @@ const sidebars = {
           type: 'doc',
           id: 'database-testing',
           label: 'Database Testing'
+        },
+        {
+          type: 'category',
+          label: 'Notifications',
+          items: [
+            'notifications/index',
+            'notifications/configuration',
+            'notifications/email-setup',
+            'notifications/ci-cd-integration'
+          ]
         }
       ]
     },
