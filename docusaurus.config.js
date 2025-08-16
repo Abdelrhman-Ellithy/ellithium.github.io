@@ -116,6 +116,29 @@ const config = {
           },
           {
             type: 'dropdown',
+            label: 'Notifications',
+            position: 'left',
+            items: [
+              {
+                label: 'Overview',
+                to: '/notifications',
+              },
+              {
+                label: 'Configuration',
+                to: '/notifications/configuration',
+              },
+              {
+                label: 'Email Setup',
+                to: '/notifications/email-setup',
+              },
+              {
+                label: 'CI/CD Integration',
+                to: '/notifications/ci-cd-integration',
+              },
+            ],
+          },
+          {
+            type: 'dropdown',
             label: 'Utilities',
             position: 'left',
             items: [
@@ -241,6 +264,27 @@ const config = {
               {
                 label: 'Mobile Testing',
                 to: '/mobile-testing',
+              },
+            ],
+          },
+          {
+            title: 'Notifications',
+            items: [
+              {
+                label: 'Overview',
+                to: '/notifications',
+              },
+              {
+                label: 'Configuration',
+                to: '/notifications/configuration',
+              },
+              {
+                label: 'Email Setup',
+                to: '/notifications/email-setup',
+              },
+              {
+                label: 'CI/CD Integration',
+                to: '/notifications/ci-cd-integration',
               },
             ],
           },

@@ -19,6 +19,10 @@ const features = [
     description: 'Test SQL and NoSQL databases including MySQL, MongoDB, SQL Server, Oracle, PostgreSQL, Redis, and more.',
   },
   {
+    title: 'Notification System',
+    description: 'Automated email and Slack notifications for test results with rich reporting, failure alerts, and team collaboration.',
+  },
+  {
     title: 'Utility Libraries',
     description: 'Leverage comprehensive utilities for data generation, file handling, assertions, and system integrations.',
   },

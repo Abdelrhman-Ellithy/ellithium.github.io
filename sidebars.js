@@ -84,17 +84,17 @@ const sidebars = {
           type: 'doc',
           id: 'database-testing',
           label: 'Database Testing'
-        },
-        {
-          type: 'category',
-          label: 'Notifications',
-          items: [
-            'notifications/notifications',
-            'notifications/configuration',
-            'notifications/email-setup',
-            'notifications/ci-cd-integration'
-          ]
         }
+      ]
+    },
+    {
+      type: 'category',
+      label: 'Notifications',
+      items: [
+        'notifications/notifications',
+        'notifications/configuration',
+        'notifications/email-setup',
+        'notifications/ci-cd-integration'
       ]
     },
     {
