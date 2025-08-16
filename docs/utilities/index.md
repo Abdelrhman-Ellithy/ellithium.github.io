@@ -35,7 +35,7 @@ The Ellithium framework provides a comprehensive set of utility libraries that s
 |---------|-------------|
 | [Test Data Generator](/ellithium.github.io/utilities/test-data-generator) | Generate realistic test data for various domains including personal info, addresses, and business data. |
 | [Assertion Executor](/ellithium.github.io/utilities/assertion-executor) | Perform advanced assertions with detailed logging, supporting both hard and soft assertion modes. |
-| [Configuration Properties](/ellithium.github.io/utilities/property-files) | Configure framework behavior through property files for logging, reporting, and execution settings. |
+| [Configuration Properties](./property-files.md) | Configure framework behavior through property files for logging, reporting, and execution settings. |
 
 ## Key Features
 
@@ -82,4 +82,4 @@ public class MyTest {
 - Consider creating wrapper classes for frequent utility operations in your specific domain
 - Use soft assertions with `AssertionExecutor` when validating multiple conditions
 - Combine test data generation with property files for reproducible test runs 
-- Configure test behavior through the [property files](property-files) for consistent execution 
+- Configure test behavior through the [property files](./property-files.md) for consistent execution 

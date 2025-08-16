@@ -223,7 +223,7 @@ public class IOSTestExample {
 
 ## Related Classes
 
-- [Driver Actions](./driver-actions.md) - Main interaction class
+- [Driver Actions](../driverfactory) - Main interaction class
 - [Android Actions](./android-actions.md) - Android-specific gestures
 - [Key Press Actions](./key-press-actions.md) - Keyboard interactions
 - [Element Actions](./element-actions.md) - Basic element interactions

@@ -185,7 +185,7 @@ public class KeyPressTestExample {
 
 ## Related Classes
 
-- [Driver Actions](./driver-actions.md) - Main interaction class
+- [Driver Actions](../driverfactory) - Main interaction class
 - [Android Actions](./android-actions.md) - Android-specific gestures
 - [iOS Actions](./ios-actions.md) - iOS-specific gestures
 - [Element Actions](./element-actions.md) - Basic element interactions 

@@ -114,10 +114,7 @@ No code changes required! Notifications will be sent automatically based on your
 
 - [Configuration Guide](./configuration.md) - Detailed configuration options
 - [Email Setup](./email-setup.md) - Email provider setup instructions
-- [Slack Setup](./slack-setup.md) - Slack integration guide
 - [CI/CD Integration](./ci-cd-integration.md) - GitHub Actions and Jenkins setup
-- [Examples](./examples.md) - Real-world usage examples
-- [Troubleshooting](./troubleshooting.md) - Common issues and solutions
 
 ## Support
 

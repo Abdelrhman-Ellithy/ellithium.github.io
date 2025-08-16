@@ -50,7 +50,6 @@ const sidebars = {
           label: 'Interactions',
           items: [
             'interactions/index',
-            'interactions/driver-actions',
             'interactions/element-actions',
             'interactions/javascript-actions',
             'interactions/alert-actions',
@@ -90,7 +89,7 @@ const sidebars = {
           type: 'category',
           label: 'Notifications',
           items: [
-            'notifications/index',
+            'notifications/notifications',
             'notifications/configuration',
             'notifications/email-setup',
             'notifications/ci-cd-integration'

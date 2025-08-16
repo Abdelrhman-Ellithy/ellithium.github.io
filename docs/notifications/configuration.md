@@ -1,5 +1,5 @@
 ---
-id: notification-configuration
+id: configuration
 title: Configuration Guide
 sidebar_label: Configuration
 description: Complete configuration options for the notification system
