@@ -75,13 +75,3 @@ String timeout = PropertyHelper.getProperty("config.properties", "defaultElement
 // Set a property value
 PropertyHelper.setProperty("config.properties", "retryCountOnFailure", "2");
 ```
-
-## Customizing Properties
-
-You can override these properties for specific projects by:
-
-1. Creating your own property files in the same directory structure
-2. Setting system properties during test execution:
-   ```bash
-   mvn test -DdefaultElementWaitTimeout=30
-   ``` 
