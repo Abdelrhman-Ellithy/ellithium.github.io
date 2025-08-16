@@ -1,160 +1,174 @@
 ---
-sidebar_position: 2
+id: element-actions
+title: Element Actions
+sidebar_label: Element Actions
+description: Basic element interactions including click, type, and text retrieval
 ---
 
 # Element Actions
 
-The `ElementActions` class provides comprehensive methods for interacting with web elements. It's accessed via the `elements()` method of the `DriverActions` class.
+The `ElementActions` class provides basic element interactions with built-in waiting and error handling. All methods automatically wait for elements to be in the appropriate state before performing actions.
 
-## Element Operations
+## Overview
 
-### Clicking and Interaction
+Element actions include:
+- Sending text data to elements
+- Clicking elements
+- Retrieving text content
+- Getting attribute values
+- Working with multiple elements
+- File uploads
+- Screenshot capture
 
+## Basic Element Operations
+
+### Sending Data
+
+#### Send Text Data
 ```java
-// Click operations
-actions.elements().clickOnElement(By.id("button"));
-actions.elements().doubleClickOnElement(By.id("doubleClickTarget"));
-actions.elements().rightClickOnElement(By.id("rightClickTarget"));
-
-// Submit form
-actions.elements().submitForm(By.id("loginForm"));
+// Send text to an element with custom timeout and polling
+actions.elements().sendData(By.id("username"), "testuser", 10, 500);
+actions.elements().sendData(By.name("email"), "user@example.com", 15, 1000);
 ```
 
-### Text and Input Operations
+#### Send Keyboard Keys
+```java
+// Send keyboard keys (ENTER, TAB, etc.)
+actions.elements().sendData(By.id("search"), Keys.ENTER, 10, 500);
+actions.elements().sendData(By.id("input"), Keys.TAB, 5, 250);
+```
+
+### Clicking Elements
 
 ```java
-// Send text data
-actions.elements().sendData(By.id("username"), "testuser");
-actions.elements().sendData(By.id("password"), "password123", 10); // 10 second timeout
-actions.elements().sendData(By.id("search"), Keys.ENTER); // Send keyboard keys
-
-// Clear field
-actions.elements().clearElement(By.id("searchInput"));
-
-// Get text
-String text = actions.elements().getElementText(By.id("message"));
-String value = actions.elements().getElementAttribute(By.id("field"), "value");
+// Click on an element with custom timeout and polling
+actions.elements().clickOnElement(By.id("submit"), 10, 500);
+actions.elements().clickOnElement(By.cssSelector(".btn-primary"), 15, 1000);
 ```
+
+### Text Retrieval
+
+#### Get Text from Single Element
+```java
+// Get text content from an element
+String text = actions.elements().getText(By.id("message"), 10, 500);
+String title = actions.elements().getText(By.tagName("h1"), 5, 250);
+```
+
+#### Get Text from Multiple Elements
+```java
+// Get text from all elements matching a locator
+List<String> texts = actions.elements().getTextFromMultipleElements(
+    By.cssSelector(".item"), 10, 500
+);
+```
+
+### Attribute Operations
+
+#### Get Attribute Values
+```java
+// Get attribute value from an element
+String href = actions.elements().getAttributeValue(
+    By.cssSelector("a"), "href", 10, 500
+);
+String className = actions.elements().getAttributeValue(
+    By.id("element"), "class", 5, 250
+);
+```
+
+#### Get Attributes from Multiple Elements
+```java
+// Get attribute values from all elements matching a locator
+List<String> attributes = actions.elements().getAttributeValueFromMultipleElements(
+    By.cssSelector("img"), "src", 10, 500
+);
+```
+
+## File Operations
 
 ### File Upload
-
 ```java
-// Upload file using sendKeys (standard approach)
-actions.elements().uploadFile(By.id("fileUpload"), "C:/path/to/file.txt");
-
-// For complex scenarios, use JavaScript approach
-actions.JSActions().uploadFileUsingJS(By.id("complexFileUpload"), "C:/path/to/document.pdf");
+// Upload a file to a file input element
+actions.elements().uploadFile(
+    By.id("fileInput"), 
+    "path/to/file.pdf", 
+    10, 
+    500
+);
 ```
 
-### Element State Verification
-
+### Screenshot Capture
 ```java
-// Verify element states
-boolean isDisplayed = actions.elements().isElementDisplayed(By.id("notification"));
-boolean isPresent = actions.elements().isElementPresent(By.id("optionalElement"));
-boolean isEnabled = actions.elements().isElementEnabled(By.id("submitButton"));
-boolean isSelected = actions.elements().isElementSelected(By.id("agreeCheckbox"));
-
-// Count elements
-int count = actions.elements().countElements(By.cssSelector(".result-item"));
+// Take a screenshot of an element
+actions.elements().takeScreenshot(
+    By.id("content"), 
+    "element_screenshot.png", 
+    10, 
+    500
+);
 ```
 
-### Wait Operations
+## Multiple Element Operations
 
-These methods wait for specific element conditions:
-
+### Get Multiple Elements
 ```java
-// Wait for element states
-WebElement visible = actions.waits().waitForElementToBeVisible(By.id("loading"));
-WebElement clickable = actions.waits().waitForElementToBeClickable(By.id("button"));
-WebElement present = actions.waits().waitForElementPresence(By.id("element"));
-
-// Wait for element to disappear
-actions.waits().waitForElementToDisappear(By.id("loadingSpinner"));
-
-// Wait for element selection state
-actions.waits().waitForElementToBeSelected(By.id("checkbox"));
-actions.waits().waitForElementSelectionStateToBe(By.id("checkbox"), true);
-
-// Wait for text conditions
-actions.waits().waitForTextToBePresentInElement(By.id("message"), "Success");
-actions.waits().waitForTextToBePresentInElementValue(By.id("field"), "value");
-
-// Wait for element attribute conditions
-actions.waits().waitForElementAttributeToBe(By.id("status"), "class", "active");
-actions.waits().waitForElementAttributeContains(By.id("status"), "class", "success");
-
-// Wait for number of elements
-actions.waits().waitForNumberOfElementsToBe(By.cssSelector(".result"), 5);
-actions.waits().waitForNumberOfElementsToBeMoreThan(By.cssSelector(".item"), 3);
-actions.waits().waitForNumberOfElementsToBeLessThan(By.cssSelector(".item"), 10);
-
-// Wait for visibility of multiple elements
-List<WebElement> elements = actions.waits().waitForVisibilityOfAllElements(By.cssSelector(".item"));
+// Get all elements matching a locator
+List<WebElement> elements = actions.elements().getMultipleElements(
+    By.cssSelector(".item"), 10, 500
+);
 ```
 
-### Finding Elements
-
+### Check Element Count
 ```java
-// Find elements
-WebElement element = actions.elements().findWebElement(By.id("searchButton"));
-List<WebElement> elements = actions.elements().findWebElements(By.cssSelector(".result-item"));
+// Verify the number of elements
+boolean hasThreeItems = actions.elements().checkElementCount(
+    By.cssSelector(".item"), 3, 10, 500
+);
 ```
 
-## Common Patterns
+## Wait Integration
 
-### Form Filling
+All element actions automatically wait for elements to be in the appropriate state:
+
+- **Visibility**: Elements are waited to be visible before interaction
+- **Clickability**: Elements are waited to be clickable before clicking
+- **Presence**: Elements are waited to be present in DOM before operations
+
+## Error Handling
+
+The class includes comprehensive error handling:
+- Automatic retry with configurable timeout and polling
+- Detailed logging of all operations
+- Graceful failure handling
+- Element state validation
+
+## Best Practices
+
+1. **Use Descriptive Locators**: Prefer ID, name, or CSS selectors over XPath
+2. **Set Appropriate Timeouts**: Use longer timeouts for slower elements
+3. **Consistent Polling**: Use consistent polling intervals across your tests
+4. **Element State**: Ensure elements are in the expected state before interaction
+5. **Error Logging**: Check logs for detailed operation information
+
+## Example Usage
 
 ```java
-public void fillContactForm(String name, String email, String message) {
+@Test
+public void testLoginForm() {
     DriverActions actions = new DriverActions(driver);
     
-    actions.elements().sendData(By.id("name"), name);
-    actions.elements().sendData(By.id("email"), email);
-    actions.elements().sendData(By.id("message"), message);
-    actions.elements().clickOnElement(By.id("submitButton"));
+    // Navigate to login page
+    actions.navigation().navigateToUrl("https://example.com/login");
     
-    // Wait for confirmation message
-    actions.elements().waitForElementToBeVisible(By.id("confirmationMessage"));
+    // Fill login form
+    actions.elements().sendData(By.id("username"), "testuser", 10, 500);
+    actions.elements().sendData(By.id("password"), "password123", 10, 500);
+    
+    // Submit form
+    actions.elements().clickOnElement(By.id("loginButton"), 10, 500);
+    
+    // Verify success message
+    String message = actions.elements().getText(By.id("message"), 15, 1000);
+    assertEquals("Login successful", message);
 }
-```
-
-### Handling Dynamic Content
-
-```java
-public void waitForSearchResults() {
-    DriverActions actions = new DriverActions(driver);
-    
-    // Wait for loading spinner to disappear
-    actions.elements().waitForElementToDisappear(By.id("loadingSpinner"));
-    
-    // Verify results appeared
-    actions.elements().waitForNumberOfElementsToBeMoreThan(By.cssSelector(".search-result"), 0);
-    
-    // Get count of results
-    int resultCount = actions.elements().countElements(By.cssSelector(".search-result"));
-    System.out.println("Found " + resultCount + " search results");
-}
-```
-
-### Working with Timeouts
-
-All wait methods accept optional timeout and polling parameters:
-
-```java
-// Default timeout and polling
-actions.waits().waitForElementToBeVisible(By.id("result"));
-
-// Custom timeout (5 seconds)
-actions.waits().waitForElementToBeVisible(By.id("result"), 5);
-
-// Custom timeout (5 seconds) and polling interval (100ms)
-actions.waits().waitForElementToBeVisible(By.id("result"), 5, 100);
-```
-
-The default timeout and polling values can be configured in the Ellithium properties file:
-
-```properties
-defaultElementWaitTimeout=10
-defaultElementPollingTime=200
 ``` 

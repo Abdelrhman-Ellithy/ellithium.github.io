@@ -2,200 +2,177 @@
 id: android-actions
 title: Android Actions
 sidebar_label: Android Actions
-description: Android-specific mobile gestures and actions for mobile testing
+description: Android-specific mobile gestures and actions using Appium UIAutomator2
 ---
 
 # Android Actions
 
-The `AndroidActions` class provides Android-specific mobile gestures and actions for mobile testing using Appium UIAutomator2 driver. This class extends `KeyPressActions` and offers a comprehensive set of mobile gesture methods.
+The `AndroidActions` class provides Android-specific mobile gestures and actions using Appium UIAutomator2 driver. It extends `KeyPressActions` and provides native Android gesture support.
 
 ## Overview
 
-Android Actions is designed to work with Android devices through Appium and provides native Android gesture support including:
-- Drag and drop gestures
-- Fling gestures
+Android actions include:
+- Drag gestures on elements and coordinates
+- Fling gestures in different directions
 - Double-click gestures
+- Long press gestures
 - Pinch gestures
-- Swipe gestures
 - Scroll gestures
-- And many more mobile-specific interactions
+- Tap gestures
 
-## Getting Started
-
-```java
-import Ellithium.Utilities.interactions.AndroidActions;
-import Ellithium.Utilities.interactions.DriverActions;
-
-// Get AndroidActions from DriverActions
-AndroidActions<AppiumDriver> androidActions = driverActions.androidActions();
-```
-
-## Available Methods
+## Gesture Operations
 
 ### Drag Gestures
 
-#### dragGesture(WebElement element, int endX, int endY)
-Performs a drag gesture on an element to specified coordinates.
-
+#### Drag Element to Coordinates
 ```java
+// Drag an element to specific coordinates
 WebElement element = driver.findElement(By.id("draggable"));
-androidActions.dragGesture(element, 300, 400);
+actions.androidActions().dragGesture(element, 200, 300);
 ```
 
-#### dragGesture(int startX, int startY, int endX, int endY)
-Performs a drag gesture from specified start coordinates to end coordinates.
-
+#### Drag from Coordinates to Coordinates
 ```java
-androidActions.dragGesture(100, 200, 300, 400);
+// Drag from start coordinates to end coordinates
+actions.androidActions().dragGesture(100, 200, 300, 400);
 ```
 
 ### Fling Gestures
 
-#### flingGesture(WebElement element, String direction)
-Performs a fling gesture on an element in the specified direction.
-
+#### Fling Element in Direction
 ```java
+// Fling an element in specified direction
 WebElement element = driver.findElement(By.id("scrollable"));
-androidActions.flingGesture(element, "up");    // up, down, left, right
+actions.androidActions().flingGesture(element, "up");
+actions.androidActions().flingGesture(element, "down");
+actions.androidActions().flingGesture(element, "left");
+actions.androidActions().flingGesture(element, "right");
 ```
 
-### Double-Click Gestures
+### Click Gestures
 
-#### doubleClickGesture(WebElement element)
-Performs a double-click gesture on an element.
-
+#### Double Click Gesture
 ```java
+// Perform double-click on an element
 WebElement element = driver.findElement(By.id("clickable"));
-androidActions.doubleClickGesture(element);
+actions.androidActions().doubleClickGesture(element);
+```
+
+#### Long Press Gesture
+```java
+// Perform long press on an element
+WebElement element = driver.findElement(By.id("longPressable"));
+actions.androidActions().longPressGesture(element);
 ```
 
 ### Pinch Gestures
 
-#### pinch(WebElement element, float scale, float velocity)
-Performs a pinch gesture on an element with specified scale and velocity.
-
+#### Pinch Element
 ```java
-WebElement element = driver.findElement(By.id("zoomable"));
-androidActions.pinch(element, 0.5f, 2.0f);  // Scale down with medium velocity
-```
-
-#### pinch(WebElement element, float scale)
-Performs a pinch gesture on an element with specified scale.
-
-```java
-WebElement element = driver.findElement(By.id("zoomable"));
-androidActions.pinch(element, 2.0f);  // Scale up
-```
-
-### Swipe Gestures
-
-#### swipe(WebElement element, String direction, float percent, float speed)
-Performs a swipe gesture on an element in the specified direction.
-
-```java
-WebElement element = driver.findElement(By.id("swipeable"));
-androidActions.swipe(element, "left", 0.75f, 0.5f);  // Swipe left with 75% distance and medium speed
-```
-
-#### swipe(int startX, int startY, int endX, int endY, float speed)
-Performs a swipe gesture from start to end coordinates.
-
-```java
-androidActions.swipe(100, 200, 300, 400, 0.8f);  // Swipe with high speed
+// Perform pinch gesture on an element
+WebElement element = driver.findElement(By.id("pinchable"));
+actions.androidActions().pinch(element, 0.5f, 2.0f);
 ```
 
 ### Scroll Gestures
 
-#### scroll(WebElement element, String direction, float percent, float speed)
-Performs a scroll gesture on an element in the specified direction.
-
+#### Scroll Element in Direction
 ```java
+// Scroll an element in specified direction
 WebElement element = driver.findElement(By.id("scrollable"));
-androidActions.scroll(element, "down", 0.5f, 0.3f);  // Scroll down with 50% distance and slow speed
+actions.androidActions().scroll(element, "up");
+actions.androidActions().scroll(element, "down");
+actions.androidActions().scroll(element, "left");
+actions.androidActions().scroll(element, "right");
 ```
 
-#### scroll(int startX, int startY, int endX, int endY, float speed)
-Performs a scroll gesture from start to end coordinates.
-
+#### Scroll to Element
 ```java
-androidActions.scroll(100, 200, 100, 100, 0.5f);  // Scroll up with medium speed
+// Scroll to find an element using predicate string
+WebElement element = driver.findElement(By.id("container"));
+actions.androidActions().scrollToElement(
+    element, 
+    "type == 'XCUIElementTypeButton'", 
+    "up"
+);
 ```
 
-### Long Press Gestures
+### Tap Gestures
 
-#### longClickGesture(WebElement element, long durationMillis)
-Performs a long press gesture on an element for specified duration.
-
+#### Tap Element
 ```java
-WebElement element = driver.findElement(By.id("longpressable"));
-androidActions.longClickGesture(element, 2000);  // Long press for 2 seconds
+// Tap on an element
+WebElement element = driver.findElement(By.id("tappable"));
+actions.androidActions().tap(element);
 ```
 
-### Multi-Touch Gestures
-
-#### multiTouchGesture(WebElement element, int fingers, float scale, float velocity)
-Performs a multi-touch gesture on an element.
-
+#### Tap at Coordinates
 ```java
-WebElement element = driver.findElement(By.id("multitouchable"));
-androidActions.multiTouchGesture(element, 2, 1.5f, 1.0f);  // Two-finger scale up
+// Tap at specific coordinates
+actions.androidActions().tap(150, 250);
 ```
 
-## Complete Example
+## Gesture Parameters
 
-```java
-import Ellithium.Utilities.interactions.DriverActions;
-import Ellithium.Utilities.interactions.AndroidActions;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
+### Direction Values
 
-public class AndroidTestExample {
-    
-    public void performAndroidGestures(DriverActions<AppiumDriver> driverActions) {
-        AndroidActions<AppiumDriver> androidActions = driverActions.androidActions();
-        
-        // Find elements
-        WebElement draggable = driver.findElement(By.id("draggable"));
-        WebElement scrollable = driver.findElement(By.id("scrollable"));
-        WebElement zoomable = driver.findElement(By.id("zoomable"));
-        
-        // Perform various gestures
-        androidActions.dragGesture(draggable, 300, 400);
-        androidActions.scroll(scrollable, "down", 0.5f, 0.3f);
-        androidActions.pinch(zoomable, 2.0f);
-        androidActions.swipe(scrollable, "left", 0.75f, 0.5f);
-        androidActions.longClickGesture(draggable, 2000);
-    }
-}
-```
+Valid direction values for gestures:
+- `"up"` - Upward direction
+- `"down"` - Downward direction
+- `"left"` - Leftward direction
+- `"right"` - Rightward direction
+
+### Scale and Velocity
+
+For pinch gestures:
+- **scale**: Scale factor (0.0 to 1.0 for pinch in, >1.0 for pinch out)
+- **velocity**: Speed of the pinch gesture
+
+## Error Handling
+
+All Android actions include comprehensive error handling:
+- Automatic logging of all operations
+- Graceful failure handling
+- Detailed error messages
+- Non-blocking execution
 
 ## Best Practices
 
-1. **Element Validation**: Always ensure elements are present and interactable before performing gestures
-2. **Coordinate Accuracy**: Use precise coordinates for gesture operations
-3. **Speed Control**: Adjust gesture speed based on device performance and test requirements
-4. **Error Handling**: Implement proper error handling for gesture failures
-5. **Device Compatibility**: Test gestures on different Android versions and device types
+1. **Element State**: Ensure elements are in the expected state before gestures
+2. **Coordinate Bounds**: Use coordinates within screen bounds
+3. **Gesture Timing**: Allow sufficient time between gestures
+4. **Error Logging**: Check logs for gesture execution status
+5. **Element Validation**: Verify elements support the requested gesture
 
-## Troubleshooting
+## Example Usage
 
-### Common Issues
+```java
+@Test
+public void testAndroidGestures() {
+    DriverActions actions = new DriverActions(driver);
+    
+    // Find scrollable element
+    WebElement scrollable = driver.findElement(By.id("scrollable"));
+    
+    // Scroll down to find target element
+    actions.androidActions().scroll(scrollable, "down");
+    
+    // Find and tap target element
+    WebElement target = driver.findElement(By.id("target"));
+    actions.androidActions().tap(target);
+    
+    // Verify action completed
+    WebElement result = driver.findElement(By.id("result"));
+    assertTrue(result.isDisplayed());
+}
+```
 
-- **Gesture Not Recognized**: Ensure the element supports the gesture type
-- **Coordinate Out of Bounds**: Verify coordinates are within screen boundaries
-- **Driver Compatibility**: Ensure using Appium UIAutomator2 driver
-- **Element State**: Check if element is visible and enabled
+## Technical Details
 
-### Debug Tips
+The Android actions use Appium's UIAutomator2 driver mobile gestures:
+- Native Android gesture support
+- Optimized performance
+- Reliable gesture execution
+- Cross-device compatibility
 
-- Use logging to track gesture execution
-- Verify element properties before gesture execution
-- Test gestures on physical devices when possible
-- Check Appium logs for detailed error information
-
-## Related Classes
-
-- [Driver Actions](../driverfactory) - Main interaction class
-- [iOS Actions](./ios-actions.md) - iOS-specific gestures
-- [Key Press Actions](./key-press-actions.md) - Keyboard interactions
-- [Element Actions](./element-actions.md) - Basic element interactions
+For more information, see the [Appium UIAutomator2 documentation](https://github.com/appium/appium-uiautomator2-driver/blob/master/docs/android-mobile-gestures.md).
