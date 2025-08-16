@@ -50,6 +50,7 @@ const sidebars = {
           label: 'Interactions',
           items: [
             'interactions/index',
+            'interactions/driver-actions',
             'interactions/element-actions',
             'interactions/javascript-actions',
             'interactions/alert-actions',
