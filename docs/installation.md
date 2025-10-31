@@ -20,7 +20,7 @@ Add Ellithium to your project by including this dependency in your `pom.xml`:
 <dependency>
     <groupId>io.github.abdelrhman-ellithy</groupId>
     <artifactId>ellithium</artifactId>
-    <version>2.2.0</version> // check the latest version on the repo
+    <version>${LatestEllithiumVersion}</version> // check the latest version on the repo
 </dependency>
 ```
 
@@ -33,7 +33,7 @@ Your `pom.xml` should include these essential configurations:
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <version>2.2.0</version> // check the latest version on the repo
+    <version>${LatestEllithiumVersion}</version> // check the latest version on the repo
 </properties>
 
 <build>
@@ -42,7 +42,7 @@ Your `pom.xml` should include these essential configurations:
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.14.0</version>
+            <version>${LatestVersion}</version>
             <configuration>
                 <source>21</source>
                 <target>21</target>
@@ -53,7 +53,7 @@ Your `pom.xml` should include these essential configurations:
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>3.5.3</version>
+            <version>${LatestVersion}</version>
             <configuration>
                 <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
                 <testFailureIgnore>true</testFailureIgnore>
@@ -74,7 +74,7 @@ Your `pom.xml` should include these essential configurations:
         <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-            <version>3.5.0</version>
+            <version>${LatestVersion}</version>
             <executions>
                 <execution>
                     <id>intialize</id>

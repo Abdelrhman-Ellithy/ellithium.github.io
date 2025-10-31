@@ -20,7 +20,7 @@ Add to your `pom.xml`:
 <dependency>
     <groupId>io.github.abdelrhman-ellithy</groupId>
     <artifactId>ellithium</artifactId>
-    <version>2.1.0</version> // check the latest version on the repo
+    <version>${LatestVersion}</version> // check the latest version on the repo
 </dependency>
 ```
 ### 2. follow the instruction to installation and project setup
