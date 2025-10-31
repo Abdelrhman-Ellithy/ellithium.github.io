@@ -1,0 +1,282 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  /* Primary brand color - colorful palette for light mode */
+  --ifm-color-primary: #7e57c2; /* Purple */
+  --ifm-color-primary-dark: #6a46b0;
+  --ifm-color-primary-darker: #5e3fa0;
+  --ifm-color-primary-darkest: #4e3383;
+  --ifm-color-primary-light: #9168d9;
+  --ifm-color-primary-lighter: #a57ce0;
+  --ifm-color-primary-lightest: #bca0e6;
+  
+  /* Secondary colors for accents */
+  --ifm-color-secondary: #26a69a; /* Teal */
+  --ifm-color-success: #66bb6a; /* Green */
+  --ifm-color-info: #42a5f5; /* Blue */
+  --ifm-color-warning: #ffa726; /* Orange */
+  --ifm-color-danger: #ef5350; /* Red */
+  
+  /* Background colors */
+  --ifm-background-color: #ffffff;
+  --ifm-background-surface-color: #f8f5ff;
+  
+  /* Text colors */
+  --ifm-font-color-base: #333333;
+  --ifm-heading-color: #3c2882;
+  
+  /* Code blocks */
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(126, 87, 194, 0.1);
+  --ifm-code-background: #f5f0ff;
+  
+  /* Cards and containers */
+  --ifm-card-background-color: #ffffff;
+  --ifm-navbar-background-color: #ffffff;
+  --ifm-footer-background-color: #4e3383;
+  --ifm-footer-color: #ffffff;
+  
+  /* Links */
+  --ifm-link-color: var(--ifm-color-primary);
+  --ifm-link-hover-color: var(--ifm-color-primary-darker);
+  
+  /* Tables */
+  --ifm-table-head-background: #efe5ff;
+  --ifm-table-stripe-background: #f8f5ff;
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+  /* Primary brand color for dark mode - black and gold theme */
+  --ifm-color-primary: #ffd700; /* Gold */
+  --ifm-color-primary-dark: #f0c800;
+  --ifm-color-primary-darker: #e0ba00;
+  --ifm-color-primary-darkest: #c0a000;
+  --ifm-color-primary-light: #ffe042;
+  --ifm-color-primary-lighter: #ffe766;
+  --ifm-color-primary-lightest: #fff0a0;
+  
+  /* Background colors - black theme */
+  --ifm-background-color: #121212;
+  --ifm-background-surface-color: #1a1a1a;
+  
+  /* Text colors */
+  --ifm-font-color-base: #e0e0e0;
+  --ifm-heading-color: #ffd700; /* Gold headers */
+  
+  /* Code blocks */
+  --docusaurus-highlighted-code-line-bg: rgba(255, 215, 0, 0.15);
+  --ifm-code-background: #2a2a2a;
+  
+  /* Cards and containers */
+  --ifm-card-background-color: #1e1e1e;
+  --ifm-navbar-background-color: #0a0a0a;
+  --ifm-footer-background-color: #000000;
+  
+  /* Secondary colors for accents */
+  --ifm-color-secondary: #ccb000; /* Gold */
+  --ifm-color-success: #8fbc8f; /* Muted green */
+  --ifm-color-info: #87ceeb; /* Lighter blue */
+  --ifm-color-warning: #e6c200; /* Gold-orange */
+  --ifm-color-danger: #cd5c5c; /* Softer red */
+  
+  /* Tables */
+  --ifm-table-head-background: #2a2a2a;
+  --ifm-table-stripe-background: #232323;
+}
+
+/* Custom styles for better UI */
+.navbar {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.navbar__logo img {
+  border-radius: 50%;
+}
+
+article a {
+  font-weight: 500;
+  text-decoration: none;
+}
+
+article a:hover {
+  text-decoration: underline;
+}
+
+.admonition {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.table-of-contents {
+  border-left: 2px solid var(--ifm-color-primary-lightest);
+}
+
+.card {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='dark'] .card:hover {
+  box-shadow: 0 10px 20px rgba(255, 215, 0, 0.1);
+}
+
+.pagination-nav__link {
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.pagination-nav__link:hover {
+  background-color: var(--ifm-color-primary-lightest);
+  color: var(--ifm-color-primary-darkest);
+}
+
+code {
+  border-radius: 4px;
+}
+
+.theme-code-block {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .theme-code-block {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid #333;
+}
+
+table {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th {
+  font-weight: 600;
+}
+
+/* Make feature table cells centered and more readable */
+table td {
+  text-align: center;
+}
+
+/* Style for feature tables with icons */
+table td:has(img) {
+  padding: 8px;
+}
+
+/* Enhanced table styles */
+.table-responsive {
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+table {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+table thead tr {
+  background-color: var(--ifm-table-head-background);
+}
+
+table thead th {
+  padding: 12px 15px;
+  font-weight: 600;
+  text-align: left;
+  border-bottom: 2px solid var(--ifm-color-primary-lightest);
+}
+
+[data-theme='dark'] table thead th {
+  color: var(--ifm-color-primary); /* Gold headers in dark mode */
+}
+
+table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+table tbody tr:nth-child(odd) {
+  background-color: var(--ifm-table-stripe-background);
+}
+
+table tbody tr:hover {
+  background-color: var(--ifm-color-primary-lightest);
+}
+
+[data-theme='dark'] table tbody tr:hover {
+  background-color: rgba(255, 215, 0, 0.1); /* Subtle gold hover in dark mode */
+}
+
+table tbody td {
+  padding: 10px 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='dark'] table tbody td {
+  border-bottom: 1px solid rgba(255, 215, 0, 0.1); /* Subtle gold borders in dark mode */
+}
+
+/* Feature tables with checkmarks */
+table td:has(:only-child) > img,
+table td img[alt="✅"] {
+  display: block;
+  margin: 0 auto;
+}
+
+/* Create nice buttons for code tabs */
+.tabs {
+  margin-bottom: 1rem;
+}
+
+.tabs__item {
+  padding: 0.75rem 1rem;
+  border-radius: 8px 8px 0 0;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.tabs__item--active {
+  background-color: var(--ifm-color-primary-lightest) !important;
+  border-bottom: 2px solid var(--ifm-color-primary);
+}
+
+/* Enhance blockquote styling */
+blockquote {
+  border-left: 4px solid var(--ifm-color-primary);
+  background-color: var(--ifm-background-surface-color);
+  padding: 15px 20px;
+  margin: 20px 0;
+  border-radius: 0 8px 8px 0;
+}
+
+[data-theme='dark'] blockquote {
+  border-left: 4px solid var(--ifm-color-primary); /* Gold border for blockquotes in dark mode */
+  background-color: rgba(255, 215, 0, 0.05); /* Very subtle gold background */
+}
+
+/* Style for check marks in tables */
+table td:contains("✅") {
+  color: #00c853;
+  font-weight: bold;
+}
+
+[data-theme='dark'] .navbar {
+  border-bottom: 1px solid var(--ifm-color-primary-darker);
+}
+
+[data-theme='dark'] .footer {
+  border-top: 1px solid var(--ifm-color-primary-darker);
+}
