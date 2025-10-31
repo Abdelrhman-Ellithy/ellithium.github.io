@@ -106,7 +106,7 @@ Default mode uses TestNG for test execution, providing more control over test fl
 
 ### Step 1: Create a Base Test Class
 
-Create a base class that extends `NonBDDSetup`:
+Create a base class that for handling driver setup and taredown :
 
 ```java
 package tests.base;
@@ -116,7 +116,7 @@ import Ellithium.core.driver.DriverFactory;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.*;
 
-public class BaseTests extends NonBDDSetup {
+public class BaseTests {
     protected WebDriver driver;
 
     @BeforeClass
