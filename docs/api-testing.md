@@ -4,216 +4,152 @@ sidebar_position: 7
 
 # API Testing
 
-Ellithium provides a powerful API testing framework built on top of REST Assured, offering a simplified and intuitive interface for testing RESTful and SOAP services.
+Ellithium uses Rest Assured directly for API testing. There is no custom request/response wrapper. The framework adds:
+- Automatic request/response logging to the report (as step attachments)
+- Sensitive data obfuscation and field detection (e.g., passwords, tokens)
+- A Postman-like `Environment` utility for variables per test suite
 
-## Basic API Requests
-
-### Making GET Requests
-
-```java
-// Simple GET request
-ApiResponse response = ApiRequest.get("https://api.example.com/users")
-    .execute();
-
-// GET with query parameters
-ApiResponse response = ApiRequest.get("https://api.example.com/users")
-    .addQueryParam("page", "1")
-    .addQueryParam("limit", "10")
-    .execute();
-
-// GET with path parameters
-ApiResponse response = ApiRequest.get("https://api.example.com/users/{userId}")
-    .addPathParam("userId", "123")
-    .execute();
-```
-
-### POST Requests
+## Quick Start with Rest Assured
 
 ```java
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+
+import static io.restassured.RestAssured.given;
+
+// Base URI (typically in @BeforeClass)
+RestAssured.baseURI = "https://api.example.com";
+
+// Simple GET
+Response getResp = given()
+    .when()
+    .get("/users");
+
 // POST with JSON body
-ApiResponse response = ApiRequest.post("https://api.example.com/users")
-    .setContentType(ContentType.JSON)
-    .setBody("{\"name\":\"John\",\"email\":\"john@example.com\"}")
-    .execute();
-
-// POST with form parameters
-ApiResponse response = ApiRequest.post("https://api.example.com/login")
-    .setContentType(ContentType.FORM)
-    .addFormParam("username", "john")
-    .addFormParam("password", "secret")
-    .execute();
-
-// POST with object as JSON (automatic serialization)
-User user = new User("John Doe", "john@example.com");
-ApiResponse response = ApiRequest.post("https://api.example.com/users")
-    .setContentType(ContentType.JSON)
-    .setBody(user)
-    .execute();
+String payload = "{" +
+    "\"name\":\"John\"," +
+    "\"email\":\"john@example.com\"" +
+"}";
+Response postResp = given()
+    .contentType(ContentType.JSON)
+    .body(payload)
+    .when()
+    .post("/users");
 ```
 
-### Other HTTP Methods
+Assertions are done with your preferred assertion library (e.g., TestNG/JUnit) on the `Response` returned by Rest Assured.
 
+## What Ellithium Adds
+
+- Request logging: method, URL, path/query params, headers, cookies, and body
+- Response logging: status code, headers/cookies, time, and body
+- Sensitive data handling: automatic obfuscation for known fields (e.g., password, token)
+- Report integration: all above are attached as steps in the execution report
+
+You keep using Rest Assured methods as-is; the framework enriches logs and report outputs.
+
+## Environment (Postman-like)
+
+Use `Ellithium.core.API.Environment` to store and reuse variables (similar to Postman environments). Values are persisted under `src/test/resources/TestData/Environments/<envName>.json`.
+
+Common operations:
 ```java
-// PUT request
-ApiResponse response = ApiRequest.put("https://api.example.com/users/123")
-    .setContentType(ContentType.JSON)
-    .setBody("{\"name\":\"John Updated\"}")
-    .execute();
+import Ellithium.core.API.Environment;
 
-// DELETE request
-ApiResponse response = ApiRequest.delete("https://api.example.com/users/123")
-    .execute();
+Environment env = new Environment("ContactList");
 
-// PATCH request
-ApiResponse response = ApiRequest.patch("https://api.example.com/users/123")
-    .setContentType(ContentType.JSON)
-    .setBody("{\"status\":\"inactive\"}")
-    .execute();
+// Set values
+env.set("baseUrl", "https://api.example.com");
+env.set("token", "<jwt>");
+env.set("retries", 3);
+
+// Get values (typed)
+String baseUrl = env.get("baseUrl");
+int retries = env.get("retries", Integer.class);
+boolean featureOn = env.get("featureOn", Boolean.class);
+
+// Utilities
+env.remove("token");
+boolean hasToken = env.has("token");
 ```
 
-## Headers and Authentication
+## Example: Contact List API (Rest Assured + Environment)
 
 ```java
-// Add request headers
-ApiResponse response = ApiRequest.get("https://api.example.com/users")
-    .addHeader("Accept", "application/json")
-    .addHeader("X-API-Key", "your-api-key")
-    .execute();
+import Ellithium.Utilities.assertion.AssertionExecutor;
+import Ellithium.core.API.Environment;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-// Basic authentication
-ApiResponse response = ApiRequest.get("https://api.example.com/protected-resource")
-    .setBasicAuth("username", "password")
-    .execute();
+import static io.restassured.RestAssured.given;
 
-// Bearer token authentication
-ApiResponse response = ApiRequest.get("https://api.example.com/protected-resource")
-    .addHeader("Authorization", "Bearer " + token)
-    .execute();
+public class ContactListAPITests {
+    private Environment env;
 
-// OAuth2 authentication
-ApiResponse response = ApiRequest.get("https://api.example.com/protected-resource")
-    .setOAuth2Token(token)
-    .execute();
-```
+    @BeforeClass
+    public void setUp() {
+        RestAssured.baseURI = "https://thinking-tester-contact-list.herokuapp.com/";
+        env = new Environment("ContactList");
+        env.set("firstName", "Amy");
+        env.set("lastName", "Smith");
+        env.set("userEmail", "testtt@fake.com");
+    }
 
-## Response Handling
+    @Test(priority = 1)
+    public void loginUser() {
+        String payload = """
+                {
+                    "email": "%s",
+                    "password": "123456789"
+                }
+                """.formatted(env.get("userEmail"));
 
-```java
-// Get response status code
-int statusCode = response.getStatusCode();
-Assert.assertEquals(200, statusCode);
+        Response response = given()
+                .contentType(ContentType.JSON)
+                .body(payload)
+                .when()
+                .post("/users/login");
 
-// Get response body as string
-String body = response.getBody();
+        AssertionExecutor.soft soft = new AssertionExecutor.soft();
+        soft.assertEquals(response.getStatusCode(), 200);
+        env.set("token", response.jsonPath().getString("token"));
+        soft.assertNotNull(env.get("token"));
+        soft.assertAll();
+    }
 
-// Get response body as JSON object
-JsonObject jsonResponse = response.getJsonObject();
-String name = jsonResponse.get("name").getAsString();
+    @Test(priority = 2)
+    public void addContact() {
+        String payload = """
+                {
+                    "firstName": "%s",
+                    "lastName": "%s",
+                    "email": "asmith@thinkingtester.com"
+                }
+                """.formatted(env.get("firstName"), env.get("lastName"));
 
-// Get response body as deserialized object
-User user = response.getObject(User.class);
-String email = user.getEmail();
+        Response response = given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + env.get("token"))
+                .body(payload)
+                .when()
+                .post("/contacts");
 
-// Get specific header
-String contentType = response.getHeader("Content-Type");
-
-// Get response time in milliseconds
-long responseTime = response.getResponseTime();
-Assert.assertTrue(responseTime < 1000);
-```
-
-## JSON Path Assertions
-
-```java
-// Assert value using JSON path
-response.assertThat()
-    .jsonPath("$.name", equalTo("John Doe"))
-    .jsonPath("$.age", greaterThan(18))
-    .jsonPath("$.active", is(true))
-    .jsonPath("$.roles", hasItem("admin"))
-    .jsonPath("$.address.city", containsString("New York"));
-
-// Extract values using JSON path
-String email = response.jsonPath("$.email");
-List<String> roles = response.jsonPathAsList("$.roles");
-int age = response.jsonPathAs("$.age", Integer.class);
-```
-
-## File Upload and Download
-
-```java
-// Upload file
-File fileToUpload = new File("test.txt");
-ApiResponse response = ApiRequest.post("https://api.example.com/upload")
-    .addMultiPart("file", fileToUpload)
-    .execute();
-
-// Download file
-ApiResponse response = ApiRequest.get("https://api.example.com/download/report.pdf")
-    .execute();
-File downloadedFile = response.saveBodyAsFile("downloaded-report.pdf");
-```
-
-## Request and Response Logging
-
-```java
-// Log request and response details
-ApiResponse response = ApiRequest.get("https://api.example.com/users")
-    .logRequest()
-    .logResponse()
-    .execute();
-
-// Conditional logging (only on errors)
-ApiResponse response = ApiRequest.get("https://api.example.com/users")
-    .logRequestIfError()
-    .logResponseIfError()
-    .execute();
-```
-
-## Assertions with TestNG Integration
-
-```java
-// Using built-in assertion methods
-response.assertStatusCodeIs(200)
-    .assertContentTypeIs(ContentType.JSON)
-    .assertResponseTimeBelow(1000)
-    .assertBodyContains("success");
-
-// Chainable assertions
-response.assertThat()
-    .statusCode(equalTo(200))
-    .contentType(startsWith("application/json"))
-    .body("status", equalTo("success"))
-    .body("data.users.size()", greaterThan(0))
-    .body("data.users[0].id", notNullValue());
-```
-
-## API Testing in BDD with Cucumber
-
-```java
-// Step definition for API testing with Cucumber
-@Given("I have a valid authentication token")
-public void iHaveAValidAuthenticationToken() {
-    token = // Get token
+        AssertionExecutor.soft soft = new AssertionExecutor.soft();
+        soft.assertEquals(response.getStatusCode(), 201);
+        env.set("contactId", response.jsonPath().getString("_id"));
+        soft.assertAll();
+    }
 }
+```
 
-@When("I request the user profile with ID {string}")
-public void iRequestUserProfile(String userId) {
-    response = ApiRequest.get("https://api.example.com/users/{id}")
-        .addPathParam("id", userId)
-        .addHeader("Authorization", "Bearer " + token)
-        .execute();
-}
+## Headers, Auth, and Files (Rest Assured)
 
-@Then("the response status code should be {int}")
-public void theResponseStatusCodeShouldBe(int expectedStatusCode) {
-    response.assertStatusCodeIs(expectedStatusCode);
-}
+- Headers/cookies/params: use Rest Assured (`addHeader`, `headers`, `queryParam`, etc.)
+- Auth: Basic/Bearer/OAuth2 via Rest Assured
+- File upload/download: use Rest Assured multipart and response file save APIs
 
-@And("the response should contain the user's email")
-public void theResponseShouldContainEmail() {
-    response.assertThat()
-        .jsonPath("$.email", notNullValue())
-        .jsonPath("$.email", containsString("@"));
-}
-``` 
+Ellithium does not replace any of these; it only logs and reports them with sensitive-field masking. 
