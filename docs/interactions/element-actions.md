@@ -50,9 +50,7 @@ String title = actions.elements().getText(By.tagName("h1"), 5, 250);
 
 ```java
 // Get text from all elements matching a locator
-List<String> texts = actions.elements().getTextFromMultipleElements(
-    By.cssSelector(".item"), 10, 500
-);
+List<String> texts = actions.elements().getTextFromMultipleElements(By.cssSelector(".item"), 10, 500);
 ```
 // Attribute (single)
 String href = actions.elements().getAttributeValue(By.cssSelector("a"), "href", 10, 200);
