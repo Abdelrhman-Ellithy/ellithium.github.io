@@ -34,7 +34,7 @@ String currentUrl = driver.getCurrentUrl();
 boolean containsText = actions.waits().waitForUrlContains("dashboard");
 
 // Verify exact URL
-boolean isExactUrl = actions.waits().waitForUrlToBe("https://example.com/dashboard");
+boolean isExactUrl = actions.waits().waitForUrlToBe("https://example.com/dashboard", 10, 200);
 ```
 
 ## Working with Page Titles
@@ -44,7 +44,7 @@ boolean isExactUrl = actions.waits().waitForUrlToBe("https://example.com/dashboa
 String pageTitle = driver.getTitle();
 
 // Verify title containing text
-boolean containsText = actions.waits().waitForTitleContains("Dashboard");
+boolean containsText = actions.waits().waitForTitleContains("Dashboard", 10, 200);
 
 // Verify exact title
 boolean isExactTitle = actions.waits().waitForTitleIs("User Dashboard");
@@ -62,22 +62,22 @@ public void completeOnboardingFlow() {
     actions.navigation().navigateToUrl("https://example.com");
     
     // Navigate through the onboarding steps
-    actions.elements().clickOnElement(By.id("getStarted"));
-    actions.waits().waitForUrlContains("/step1");
+    actions.elements().clickOnElement(By.id("getStarted"), 10, 200);
+    actions.waits().waitForUrlContains("/step1", 10, 200);
     
-    actions.elements().sendData(By.id("userName"), "TestUser");
-    actions.elements().clickOnElement(By.id("nextButton"));
-    actions.waits().waitForUrlContains("/step2");
+    actions.elements().sendData(By.id("userName"), "TestUser", 10, 200);
+    actions.elements().clickOnElement(By.id("nextButton"), 10, 200);
+    actions.waits().waitForUrlContains("/step2", 10, 200);
     
     actions.elements().sendData(By.id("email"), "test@example.com");
     actions.elements().clickOnElement(By.id("nextButton"));
     actions.waits().waitForUrlContains("/step3");
     
-    actions.elements().clickOnElement(By.id("finishButton"));
+    actions.elements().clickOnElement(By.id("finishButton"), 10, 200);
     
     // Verify we reached the dashboard
-    actions.waits().waitForUrlContains("/dashboard");
-    actions.waits().waitForTitleContains("Dashboard");
+    actions.waits().waitForUrlContains("/dashboard", 10, 200);
+    actions.waits().waitForTitleContains("Dashboard", 10, 200);
 }
 ```
 
@@ -91,18 +91,18 @@ public void testBrowserNavigation() {
     actions.navigation().navigateToUrl("https://example.com");
     
     // Go to another page
-    actions.elements().clickOnElement(By.linkText("About Us"));
-    actions.waits().waitForUrlContains("/about");
+    actions.elements().clickOnElement(By.linkText("About Us"), 10, 200);
+    actions.waits().waitForUrlContains("/about", 10, 200);
     
     // Navigate back to homepage
     actions.navigation().navigateBack();
-    actions.waits().waitForUrlToBe("https://example.com/");
+    actions.waits().waitForUrlToBe("https://example.com/", 10, 200);
     
     // Navigate forward to About page again
     actions.navigation().navigateForward();
-    actions.waits().waitForUrlContains("/about");
+    actions.waits().waitForUrlContains("/about", 10, 200);
     
     // Refresh the page
     actions.navigation().refreshPage();
-    actions.waits().waitForElementToBeVisible(By.id("aboutHeading"));
+    actions.waits().waitForElementToBeVisible(By.id("aboutHeading"), 10, 200);
 } 

@@ -4,124 +4,68 @@ sidebar_position: 6
 
 # Mouse Actions
 
-The `MouseActions` class provides methods for advanced mouse interactions such as hovering, drag-and-drop, and complex clicks. It's accessed via the `mouse()` method of the `DriverActions` class.
+The `MouseActions` class provides advanced mouse interactions: hover, drag-and-drop, context/double click, and slider moves. Access it via `mouse()` on `DriverActions`.
 
-## Basic Mouse Operations
+## Methods (from the framework)
+
+```java
+// Hover
+void hoverOverElement(By locator, int timeout);
+void hoverOverElement(By locator);
+
+// Hover then click a target
+void hoverAndClick(By locatorToHover, By locatorToClick, int timeout, int pollingEvery);
+void hoverAndClick(By locatorToHover, By locatorToClick, int timeout);
+void hoverAndClick(By locatorToHover, By locatorToClick);
+
+// Drag and drop
+void dragAndDrop(By sourceLocator, By targetLocator);
+void dragAndDropByOffset(By sourceLocator, int xOffset, int yOffset);
+
+// Clicks
+void rightClick(By locator, int timeout, int pollingEvery);
+void rightClick(By locator, int timeout);
+void rightClick(By locator);
+
+void doubleClick(By locator, int timeout, int pollingEvery);
+void doubleClick(By locator, int timeout);
+void doubleClick(By locator);
+
+// Slider controls
+float moveSliderTo(By sliderLocator, By rangeLocator, float targetValue);
+void moveSliderByOffset(By sliderLocator, int xOffset, int yOffset, int timeout, int pollingEvery);
+void moveSliderByOffset(By sliderLocator, int xOffset, int yOffset);
+```
+
+## Usage
 
 ```java
 DriverActions actions = new DriverActions(driver);
 
-// Double click on an element
-actions.mouse().doubleClick(By.id("doubleClickTarget"));
+// Hover menu and click submenu
+actions.mouse().hoverAndClick(By.id("menu"), By.id("submenu"), 10, 200);
 
-// Right click (context click) on an element
-actions.mouse().rightClick(By.id("rightClickTarget"));
+// Right click on element
+actions.mouse().rightClick(By.cssSelector(".item"));
 
-// Hover over an element (move to element)
-actions.mouse().moveToElement(By.id("hoverMenu"));
+// Double click a card
+actions.mouse().doubleClick(By.id("card"), 10, 200);
 
-// Click and hold an element
-actions.mouse().clickAndHold(By.id("dragItem"));
+// Drag card onto target
+actions.mouse().dragAndDrop(By.id("card"), By.id("dropzone"));
 
-// Release the mouse button
-actions.mouse().release();
+// Drag element by offset (100 px right, 0 px down)
+actions.mouse().dragAndDropByOffset(By.id("thumb"), 100, 0);
+
+// Move slider to 0.75 (75%) using slider and its filled-range element
+float actual = actions.mouse().moveSliderTo(By.id("slider"), By.cssSelector(".range"), 0.75f);
+
+// Nudge slider by offset
+actions.mouse().moveSliderByOffset(By.id("slider"), 20, 0, 10, 200);
 ```
 
-## Drag and Drop
+## Tips
 
-```java
-// Drag and drop using element locators
-actions.mouse().dragAndDrop(
-    By.id("sourceElement"), 
-    By.id("targetElement")
-);
-
-// Drag and drop by offset (x,y coordinates)
-actions.mouse().dragAndDropByOffset(
-    By.id("sourceElement"), 
-    100,  // x offset in pixels
-    50    // y offset in pixels
-);
-```
-
-## Complex Actions
-
-```java
-// Move to element with offset from its top-left corner
-actions.mouse().moveToElementWithOffset(
-    By.id("element"), 
-    10,  // x offset
-    15   // y offset
-);
-
-// Perform complex sequences
-actions.mouse().clickAndHold(By.id("slider"))
-    .moveToElementWithOffset(By.id("sliderTrack"), 100, 0)
-    .release();
-```
-
-## Using Custom Timeouts
-
-```java
-// With custom timeout (10 seconds)
-actions.mouse().doubleClick(By.id("element"), 10);
-
-// With custom timeout (10 seconds) and polling interval (200ms)
-actions.mouse().rightClick(By.id("element"), 10, 200);
-```
-
-## Common Use Cases
-
-### Working with Drop-down Menus
-
-```java
-public void selectMenuOption(String menuName, String optionName) {
-    DriverActions actions = new DriverActions(driver);
-    
-    // Hover over main menu to reveal dropdown
-    actions.mouse().moveToElement(By.linkText(menuName));
-    
-    // Wait for dropdown to appear and click option
-    actions.elements().waitForElementToBeVisible(By.linkText(optionName));
-    actions.elements().clickOnElement(By.linkText(optionName));
-}
-```
-
-### Slider Interaction
-
-```java
-public void moveSlider(By sliderLocator, By trackLocator, int percentage) {
-    DriverActions actions = new DriverActions(driver);
-    
-    // Get track element to calculate width
-    WebElement track = driver.findElement(trackLocator);
-    int width = track.getSize().getWidth();
-    
-    // Calculate target position
-    int targetPosition = (int)(width * (percentage / 100.0));
-    
-    // Perform drag operation
-    actions.mouse().clickAndHold(sliderLocator)
-        .moveToElementWithOffset(trackLocator, targetPosition, 0)
-        .release();
-    
-    // Wait for value to update (assuming there's a value display)
-    actions.elements().waitForElementTextToContain(By.id("sliderValue"), String.valueOf(percentage));
-}
-```
-
-### Drag and Drop with Verification
-
-```java
-public void dragItemToTarget(String itemName, String targetName) {
-    DriverActions actions = new DriverActions(driver);
-    
-    By sourceLocator = By.xpath("//div[@class='item'][text()='" + itemName + "']");
-    By targetLocator = By.xpath("//div[@class='target'][text()='" + targetName + "']");
-    
-    // Perform drag and drop
-    actions.mouse().dragAndDrop(sourceLocator, targetLocator);
-    
-    // Verify the drop was successful (look for a success indicator)
-    actions.elements().waitForElementToBeVisible(By.cssSelector(".drop-success"));
-} 
+- Prefer element locators that are stable during drag operations.
+- For hover menus, allow time for animations; use the timeout/polling overloads.
+- Use `moveSliderTo` when the slider has a visible range element to compute current value reliably. 

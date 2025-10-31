@@ -4,136 +4,86 @@ sidebar_position: 11
 
 # Select Actions
 
-The `SelectActions` class provides specialized methods for interacting with dropdown menus, select elements, and option lists. It's accessed via the `select()` method of the `DriverActions` class.
+The `SelectActions` class provides specialized methods for interacting with native `<select>` dropdowns. It's accessed via the `select()` method of the `DriverActions` class.
 
-## Basic Select Operations
+## Selecting Options
 
 ```java
 DriverActions actions = new DriverActions(driver);
 
-// Select by visible text
-actions.select().selectByVisibleText(By.id("countrySelect"), "United States");
+// By visible text
+actions.select().selectDropdownByText(By.id("countrySelect"), "United States");
 
-// Select by value
-actions.select().selectByValue(By.id("countrySelect"), "US");
+// By value
+actions.select().selectDropdownByValue(By.id("countrySelect"), "US");
 
-// Select by index
-actions.select().selectByIndex(By.id("countrySelect"), 0); // First option
-
-// Deselect options (for multi-select)
-actions.select().deselectByVisibleText(By.id("tagsSelect"), "Urgent");
-actions.select().deselectByValue(By.id("tagsSelect"), "urgent");
-actions.select().deselectByIndex(By.id("tagsSelect"), 0);
-actions.select().deselectAll(By.id("tagsSelect"));
+// By index (0-based)
+actions.select().selectDropdownByIndex(By.id("countrySelect"), 0);
 ```
 
-## Getting Select Information
-
+With custom timeout and polling:
 ```java
-// Get all options
-List<WebElement> options = actions.select().getOptions(By.id("countrySelect"));
-
-// Get selected options
-List<WebElement> selectedOptions = actions.select().getAllSelectedOptions(By.id("tagsSelect"));
-
-// Get first selected option
-WebElement firstSelected = actions.select().getFirstSelectedOption(By.id("countrySelect"));
-
-// Check if multiple selection is allowed
-boolean isMultiple = actions.select().isMultiple(By.id("tagsSelect"));
+// 10 seconds timeout, 200ms polling
+actions.select().selectDropdownByText(By.id("countrySelect"), "United States", 10, 200);
 ```
 
-## With Custom Timeouts
+## Reading Selected Options
 
 ```java
-// With custom timeout (10 seconds)
-actions.select().selectByVisibleText(By.id("countrySelect"), "United States", 10);
+// Get selected options' texts (supports single or multi-select)
+List<String> selected = actions.select().getDropdownSelectedOptions(By.id("tagsSelect"));
 
-// With custom timeout (10 seconds) and polling interval (200ms)
-actions.select().selectByValue(By.id("countrySelect"), "US", 10, 200);
+// With custom timeout/polling
+List<String> selectedTimed = actions.select().getDropdownSelectedOptions(By.id("tagsSelect"), 10, 200);
+```
+
+## Selecting on Multiple Elements
+
+```java
+// Apply the same visible text selection to all matching select elements
+actions.select().selectDropdownByTextForMultipleElements(
+    By.cssSelector(".bulk-country"),
+    "Germany",
+    10,
+    200
+);
 ```
 
 ## Practical Examples
 
-### Dynamic Dropdown Handling
+### Cascading Dropdowns
 
 ```java
-public void selectFromDynamicDropdown() {
+public void selectCountryAndState() {
     DriverActions actions = new DriverActions(driver);
-    
-    // Click dropdown to load options
-    actions.elements().clickOnElement(By.id("countryDropdown"));
-    
-    // Wait for options to load
-    actions.elements().waitForNumberOfElementsToBeMoreThan(
-        By.cssSelector("#countryDropdown option"), 
-        1
-    );
-    
-    // Select country by visible text
-    actions.select().selectByVisibleText(By.id("countryDropdown"), "Germany");
-    
-    // Wait for state dropdown to be enabled (cascading dropdown)
-    actions.elements().waitForElementToBeEnabled(By.id("stateDropdown"));
-    
-    // Now select from the state dropdown
-    actions.select().selectByVisibleText(By.id("stateDropdown"), "Bavaria");
+
+    // Open country dropdown (custom UI) and wait for native select to be visible
+    actions.elements().clickOnElement(By.id("countryDropdown"), 10, 200);
+    actions.waits().waitForElementToBeVisible(By.id("countrySelect"), 10, 200);
+
+    // Select country (native select)
+    actions.select().selectDropdownByText(By.id("countrySelect"), "Germany", 10, 200);
+
+    // Wait for state select to become visible/enabled
+    actions.waits().waitForElementToBeVisible(By.id("stateSelect"), 10, 200);
+
+    // Select state
+    actions.select().selectDropdownByText(By.id("stateSelect"), "Bavaria", 10, 200);
 }
 ```
 
-### Multi-Select Lists
+### Multi-Select Readback
 
 ```java
-public void handleMultiSelectList() {
+public void readMultiSelectValues() {
     DriverActions actions = new DriverActions(driver);
-    
-    // Verify this is a multi-select element
-    boolean isMultiple = actions.select().isMultiple(By.id("skillsList"));
-    
-    if (isMultiple) {
-        // Select multiple options
-        actions.select().selectByVisibleText(By.id("skillsList"), "Java");
-        actions.select().selectByVisibleText(By.id("skillsList"), "JavaScript");
-        actions.select().selectByVisibleText(By.id("skillsList"), "Python");
-        
-        // Get all selected options
-        List<WebElement> selectedOptions = actions.select().getAllSelectedOptions(By.id("skillsList"));
-        System.out.println("Selected " + selectedOptions.size() + " skills");
-        
-        // Remove one option
-        actions.select().deselectByVisibleText(By.id("skillsList"), "Python");
-        
-        // Verify selection count changed
-        selectedOptions = actions.select().getAllSelectedOptions(By.id("skillsList"));
-        System.out.println("Now selected " + selectedOptions.size() + " skills");
-        
-        // Clear all selections
-        actions.select().deselectAll(By.id("skillsList"));
-    }
-}
-```
 
-### Custom Dropdowns (Non-Select Elements)
+    // Select multiple values (native multi-select)
+    actions.select().selectDropdownByText(By.id("skills"), "Java", 10, 200);
+    actions.select().selectDropdownByText(By.id("skills"), "JavaScript", 10, 200);
 
-For custom dropdowns that don't use the standard `<select>` element:
-
-```java
-public void handleCustomDropdown() {
-    DriverActions actions = new DriverActions(driver);
-    
-    // Click to open custom dropdown
-    actions.elements().clickOnElement(By.cssSelector(".custom-dropdown-toggle"));
-    
-    // Wait for dropdown menu to appear
-    actions.elements().waitForElementToBeVisible(By.cssSelector(".dropdown-menu"));
-    
-    // Click on specific option
-    actions.elements().clickOnElement(
-        By.xpath("//div[@class='dropdown-menu']//div[text()='Option 2']")
-    );
-    
-    // Verify selection was applied
-    String selectedValue = actions.elements().getElementText(By.cssSelector(".selected-value"));
-    System.out.println("Selected: " + selectedValue);
+    // Read selected values as text
+    List<String> values = actions.select().getDropdownSelectedOptions(By.id("skills"), 10, 200);
+    System.out.println("Selected: " + String.join(", ", values));
 }
 ``` 

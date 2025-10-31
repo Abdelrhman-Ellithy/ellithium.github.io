@@ -59,20 +59,20 @@ public void handleConfirmation(boolean accept) {
     DriverActions actions = new DriverActions(driver);
     
     // Click a button that triggers a confirmation dialog
-    actions.elements().clickOnElement(By.id("confirmButton"));
+    actions.elements().clickOnElement(By.id("confirmButton"), 10, 200);
     
     // Get the text to verify it's the expected alert
-    String confirmText = actions.alerts().getText();
+    String confirmText = actions.alerts().getText(10);
     System.out.println("Confirmation message: " + confirmText);
     
     // Accept or dismiss based on parameter
     if (accept) {
-        actions.alerts().accept();
+        actions.alerts().accept(10);
     } else {
-        actions.alerts().dismiss();
+        actions.alerts().dismiss(10);
     }
     
     // Wait for the result message after handling the alert
-    actions.elements().waitForElementToBeVisible(By.id("result"));
+    actions.waits().waitForElementToBeVisible(By.id("result"), 10, 200);
 }
 ``` 

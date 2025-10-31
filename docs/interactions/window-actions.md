@@ -30,7 +30,7 @@ actions.windows().switchToWindowByIndex(1); // Switch to second window
 actions.windows().switchToLastWindow();
 
 // Switch back to original window
-actions.windows().switchToOriginalWindow(originalHandle);
+actions.windows().switchToOriginalWindow(currentHandle);
 ```
 
 ## Window Size and Position
@@ -77,6 +77,9 @@ boolean exists = actions.windows().doesWindowExist("Window Title");
 // Switch to popup window by title with default timeout
 actions.windows().switchToPopupWindow("Popup Title");
 
+// Or provide custom timeout and polling
+actions.windows().switchToPopupWindow("Popup Title", 10, 200);
+
 // Close popup window and switch back to main window
 actions.windows().closePopupWindow();
 ```
@@ -106,7 +109,7 @@ public void handleMultipleWindows() {
     String mainWindow = actions.windows().getCurrentWindowHandle();
     
     // Click element that opens new window/tab
-    actions.elements().clickOnElement(By.id("openNewWindow"));
+    actions.elements().clickOnElement(By.id("openNewWindow"), 10, 200);
     
     // Wait for new window to open
     actions.windows().waitForNumberOfWindowsToBe(2);
@@ -115,8 +118,8 @@ public void handleMultipleWindows() {
     actions.windows().switchToLastWindow();
     
     // Perform actions in new window
-    actions.elements().sendData(By.id("searchField"), "test query");
-    actions.elements().clickOnElement(By.id("searchButton"));
+    actions.elements().sendData(By.id("searchField"), "test query", 10, 200);
+    actions.elements().clickOnElement(By.id("searchButton"), 10, 200);
     
     // Close new window
     actions.windows().closeCurrentWindow();
@@ -125,7 +128,7 @@ public void handleMultipleWindows() {
     actions.windows().switchToOriginalWindow(mainWindow);
     
     // Verify we're back in main window
-    actions.elements().waitForElementToBeVisible(By.id("mainPageElement"));
+    actions.waits().waitForElementToBeVisible(By.id("mainPageElement"), 10, 200);
 }
 ```
 
@@ -139,15 +142,15 @@ public void handlePopupWindow() {
     actions.elements().clickOnElement(By.id("openPopup"));
     
     // Switch to popup window
-    actions.windows().switchToPopupWindow("Terms and Conditions");
+    actions.windows().switchToPopupWindow("Terms and Conditions", 10, 200);
     
     // Scroll to bottom of popup content
     actions.JSActions().scrollToElement(By.id("agreeButton"));
     
     // Click agree button
-    actions.elements().clickOnElement(By.id("agreeButton"));
+    actions.elements().clickOnElement(By.id("agreeButton"), 10, 200);
     
     // Popup closes automatically, so we're back to main window
     // Verify we're back in main window
-    actions.elements().waitForElementToBeVisible(By.id("thankYouMessage"));
+    actions.waits().waitForElementToBeVisible(By.id("thankYouMessage"), 10, 200);
 } 

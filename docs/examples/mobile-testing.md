@@ -114,16 +114,10 @@ public class NotesTests {
         // Save the updated note
         actions.elements().clickOnElement(saveNoteBtn);
         
-        // Verify the note was updated
         actions.elements().clickOnElement(savedNoteTitle);
-        String actualContent = actions.elements().getElementAttribute(noteContentField, "text");
-        AssertionExecutor.hard.assertEquals(
-            actualContent, 
-            updatedContent,
-            "Note content should be updated"
-        );
+        String actualContent = actions.elements().getAttributeValue(noteContentField, "text");
+        AssertionExecutor.hard.assertEquals(actualContent, updatedContent, "Note content should be updated");
         
-        // Go back to the list
         driver.navigate().back();
     }
     
@@ -131,9 +125,9 @@ public class NotesTests {
     public void testDeleteNote() {
         // Long press on the note to open context menu
         By savedNoteTitle = AppiumBy.xpath("//android.widget.TextView[@text='Shopping List']");
-        actions.touch().longPress(savedNoteTitle, 2000);
+        // Long press using AndroidActions
+        actions.androidActions().longClickGesture(driver.findElement(savedNoteTitle), 1500);
         
-        // Click on delete option
         By deleteOption = AppiumBy.xpath("//android.widget.TextView[@text='Delete']");
         actions.elements().clickOnElement(deleteOption);
         
@@ -143,7 +137,7 @@ public class NotesTests {
         
         // Verify note is no longer in the list
         AssertionExecutor.hard.assertFalse(
-            actions.elements().isElementPresent(savedNoteTitle),
+            driver.findElement(savedNoteTitle).isDisplayed(),
             "Note should not be present after deletion"
         );
     }
@@ -167,7 +161,7 @@ public class NotesTests {
         // Verify search results
         By meetingNote = AppiumBy.xpath("//android.widget.TextView[@text='Meeting Notes']");
         AssertionExecutor.hard.assertTrue(
-            actions.elements().isElementDisplayed(meetingNote),
+            driver.findElement(savedNoteTitle).isDisplayed(),
             "Meeting note should appear in search results"
         );
     }
@@ -230,10 +224,9 @@ DriverActions actions = new DriverActions(driver);
 actions.elements().clickOnElement(AppiumBy.id("button_id"));
 actions.elements().sendData(AppiumBy.id("input_field"), "Test data");
 
-// Touch actions
-actions.touch().tap(AppiumBy.id("element_id"));
-actions.touch().longPress(AppiumBy.id("element_id"), 2000);
-actions.touch().swipe(startX, startY, endX, endY, duration);
+// Android gestures
+actions.androidActions().tap(driver.findElement(AppiumBy.id("element_id")));
+actions.androidActions().longClickGesture(200, 400, 1200);
 
 // Wait operations
 actions.elements().waitForElementToBeVisible(AppiumBy.id("loading_indicator"));

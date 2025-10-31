@@ -82,49 +82,6 @@ actions.JSActions().javascriptClick(By.id("ajaxButton"), 10, 200);
 
 ## Practical Examples
 
-### Highlighting Elements
-
-```java
-public void highlightElement(WebElement element, WebDriver driver) {
-    JavascriptExecutor js = (JavascriptExecutor) driver;
-    
-    // Store original style
-    String originalStyle = element.getAttribute("style");
-    
-    // Apply highlight
-    js.executeScript(
-        "arguments[0].setAttribute('style', 'background: yellow; border: 2px solid red;');", 
-        element
-    );
-    
-    // Wait briefly to see the highlight
-    try {
-        Thread.sleep(500);
-    } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-    }
-    
-    // Restore original style
-    js.executeScript("arguments[0].setAttribute('style', arguments[1]);", element, originalStyle);
-}
-```
-
-### Handling Shadow DOM
-
-```java
-public WebElement findElementInShadowDOM(WebDriver driver, String shadowHost, String elementSelector) {
-    JavascriptExecutor js = (JavascriptExecutor) driver;
-    
-    WebElement hostElement = driver.findElement(By.cssSelector(shadowHost));
-    
-    return (WebElement) js.executeScript(
-        "return arguments[0].shadowRoot.querySelector(arguments[1])", 
-        hostElement, 
-        elementSelector
-    );
-}
-```
-
 ### Scroll to Element and Wait for It
 
 ```java
@@ -135,9 +92,9 @@ public void scrollToElementAndWaitForIt(By locator, WebDriver driver) {
     actions.JSActions().scrollToElement(locator);
     
     // Wait for it to become visible after scrolling
-    actions.elements().waitForElementToBeVisible(locator);
+    actions.waits().waitForElementToBeVisible(locator, 10, 200);
     
     // Now interact with the element
-    actions.elements().clickOnElement(locator);
+    actions.elements().clickOnElement(locator, 10, 200);
 }
 ``` 

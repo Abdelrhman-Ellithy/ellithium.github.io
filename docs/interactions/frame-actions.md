@@ -6,74 +6,67 @@ sidebar_position: 5
 
 The `FrameActions` class provides methods for interacting with iframes and frames on web pages. It's accessed via the `frames()` method of the `DriverActions` class.
 
-## Basic Frame Operations
+## Switching to Frames
 
 ```java
 DriverActions actions = new DriverActions(driver);
 
-// Switch to a frame by locator
-actions.frames().switchToFrame(By.id("myIframe"));
+// By index (0-based)
+actions.frames().switchToFrameByIndex(0);
 
-// Switch to frame by index
-actions.frames().switchToFrameByIndex(0); // First frame on the page
+// By name or id
+actions.frames().switchToFrameByNameOrID("frameNameOrId");
 
-// Switch to frame by name or ID
-actions.frames().switchToFrameByNameOrId("frameNameOrId");
+// By locator
+actions.frames().switchToFrameByElement(By.id("myIframe"));
 
-// Switch back to the main document content
+// Back to main document
 actions.frames().switchToDefaultContent();
-
-// Switch to parent frame
-actions.frames().switchToParentFrame();
 ```
 
-## Waiting for Frames
-
-These methods automatically wait for frames to be available:
+## Waiting for Frames and Switching
 
 ```java
-// With custom timeout (10 seconds)
-actions.frames().switchToFrame(By.id("dynamicFrame"), 10);
+// Wait for frame by locator and switch
+actions.frames().waitForFrameToBeAvailableAndSwitchToIt(By.id("dynamicFrame"), 10, 200);
 
-// With custom timeout (10 seconds) and polling interval (200ms)
-actions.frames().switchToFrame(By.id("dynamicFrame"), 10, 200);
+// Wait for frame by name/id and switch
+actions.frames().waitForFrameByNameOrIdToBeAvailableAndSwitchToIt("frameName", 10, 200);
+
+// Wait for frame by index and switch
+actions.frames().waitForFrameByIndexToBeAvailableAndSwitchToIt(1, 10, 200);
 ```
+
+Overloads with default timeouts are also available for each of the above.
 
 ## Frame Element Interactions
 
-To interact with elements inside a frame:
-
 ```java
-// Switch to frame
-actions.frames().switchToFrame(By.id("loginFrame"));
+// Switch to frame by element
+actions.frames().switchToFrameByElement(By.id("loginFrame"));
 
 // Now interact with elements inside the frame
 actions.elements().sendData(By.id("username"), "testuser");
 actions.elements().sendData(By.id("password"), "password123");
 actions.elements().clickOnElement(By.id("loginButton"));
 
-// Switch back to main document
+// Back to main content
 actions.frames().switchToDefaultContent();
 ```
 
 ## Handling Nested Frames
 
-For nested frames, you need to switch into each level:
-
 ```java
-// Switch to outer frame
-actions.frames().switchToFrame(By.id("outerFrame"));
+// Outer frame
+actions.frames().switchToFrameByElement(By.id("outerFrame"));
 
-// Switch to nested frame
-actions.frames().switchToFrame(By.id("innerFrame"));
+// Inner frame
+actions.frames().switchToFrameByElement(By.id("innerFrame"));
 
-// Interact with elements in the inner frame
-actions.elements().clickOnElement(By.id("button"));
+// Do work inside inner frame
+actions.elements().clickOnElement(By.id("button"), 10, 200);
 
-// Go back to parent frame
-actions.frames().switchToParentFrame();
-
-// Go back to main document
+// Return to main document
 actions.frames().switchToDefaultContent();
 ```
 
@@ -83,19 +76,15 @@ actions.frames().switchToDefaultContent();
 public void fillFormInFrame() {
     DriverActions actions = new DriverActions(driver);
     
-    // Wait for frame to be available and switch to it
-    actions.frames().switchToFrame(By.id("registrationFrame"));
+    actions.frames().waitForFrameToBeAvailableAndSwitchToIt(By.id("registrationFrame"), 10, 200);
     
-    // Fill out the form inside the frame
-    actions.elements().sendData(By.id("firstName"), "John");
-    actions.elements().sendData(By.id("lastName"), "Doe");
-    actions.elements().sendData(By.id("email"), "john.doe@example.com");
-    actions.elements().clickOnElement(By.id("submitButton"));
+    actions.elements().sendData(By.id("firstName"), "John", 10, 200);
+    actions.elements().sendData(By.id("lastName"), "Doe", 10, 200);
+    actions.elements().sendData(By.id("email"), "john.doe@example.com", 10, 200);
+    actions.elements().clickOnElement(By.id("submitButton"), 10, 200);
     
-    // Switch back to main content to see confirmation
     actions.frames().switchToDefaultContent();
     
-    // Verify confirmation message in main page
-    actions.elements().waitForElementToBeVisible(By.id("confirmationMessage"));
+    actions.waits().waitForElementToBeVisible(By.id("confirmationMessage"), 10, 200);
 }
 ``` 
