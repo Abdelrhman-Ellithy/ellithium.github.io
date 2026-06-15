@@ -61,8 +61,8 @@ const sidebars = {
             'interactions/key-press-actions',
             'interactions/select-actions',
             'interactions/screen-recorder-actions',
-            'interactions/android-actions',
-            'interactions/ios-actions'
+            'interactions/mobile-actions',
+            'interactions/cookie-actions'
           ]
         },
         {
@@ -85,6 +85,16 @@ const sidebars = {
           id: 'database-testing',
           label: 'Database Testing'
         }
+      ]
+    },
+    {
+      type: 'category',
+      label: 'AI & Codegen',
+      items: [
+        'ai/index',
+        'ai/self-healing',
+        'ai/codegen-recorder',
+        'ai/ai-engine'
       ]
     },
     {
@@ -124,7 +134,8 @@ const sidebars = {
         'examples/api-testing',
         'examples/db-testing',
         'examples/mobile-testing',
-        'examples/helpers'
+        'examples/helpers',
+        'examples/ai-testing'
       ]
     }
   ]

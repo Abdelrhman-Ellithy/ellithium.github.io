@@ -124,6 +124,30 @@ MongoDatabaseProvider mongo = new MongoDatabaseProvider(
     1000 // Maximum cache size
 );
 
+// Connect to MongoDB using a default collection
+MongoDatabaseProvider mongoWithDefault = new MongoDatabaseProvider(
+    "mongodb://localhost:27017",
+    "test_db",
+    30,
+    1000,
+    "users_collection" // default collection name
+);
+
+// Dependency-injection constructor (useful for unit testing with mocks)
+MongoDatabaseProvider mongoDI = new MongoDatabaseProvider(
+    mongoClient,     // pre-configured or mocked MongoClient
+    mongoDatabase,   // pre-configured or mocked MongoDatabase
+    queryResultCache // Caffeine Cache instance
+);
+
+// DI constructor with a custom default collection name
+MongoDatabaseProvider mongoDIWithDefault = new MongoDatabaseProvider(
+    mongoClient,
+    mongoDatabase,
+    queryResultCache,
+    "users_collection" // default collection name
+);
+
 // Insert document
 Document user = new Document("name", "John Doe")
     .append("email", "john@example.com")

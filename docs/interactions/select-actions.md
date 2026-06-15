@@ -27,6 +27,34 @@ With custom timeout and polling:
 actions.select().selectDropdownByText(By.id("countrySelect"), "United States", 10, 200);
 ```
 
+## Deselecting Options
+
+For multi-select dropdowns, you can deselect options:
+
+```java
+// By visible text
+actions.select().deselectDropdownByText(By.id("skills"), "Java");
+
+// By value
+actions.select().deselectDropdownByValue(By.id("skills"), "JS");
+
+// By index
+actions.select().deselectDropdownByIndex(By.id("skills"), 0);
+
+// Deselect all options
+actions.select().deselectAll(By.id("skills"));
+```
+
+With custom timeout and polling:
+
+```java
+// 10 seconds timeout, 200ms polling
+actions.select().deselectDropdownByText(By.id("skills"), "Java", 10, 200);
+actions.select().deselectDropdownByValue(By.id("skills"), "JS", 10, 200);
+actions.select().deselectDropdownByIndex(By.id("skills"), 0, 10, 200);
+actions.select().deselectAll(By.id("skills"), 10, 200);
+```
+
 ## Reading Selected Options
 
 ```java

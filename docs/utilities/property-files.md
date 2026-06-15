@@ -15,14 +15,20 @@ The `config.properties` file contains core framework settings:
 # Number of retries for failed tests/scenarios
 retryCountOnFailure=0
 
-# Enable detailed logging (true/false)
-loggerExtensiveTraceMode=true
-
 # Default timeout for waiting on elements (seconds)
-defaultElementWaitTimeout=60
+defaultElementWaitTimeout=0
 
 # Default polling interval for element checks (milliseconds)
 defaultElementPollingTime=50
+
+# Enable GUI execution video recording
+recordGUITestExecution=true
+
+# Attach the recorded video to the Allure report
+attachRecordedGUITestExecutionToReport=true
+
+# Only attach the video when the test fails (reduces report size)
+attachRecordedGUITestExecutionToReportOnlyOnFailure=false
 ```
 
 ### Key Settings
@@ -30,9 +36,11 @@ defaultElementPollingTime=50
 | Property | Description | Default |
 |----------|-------------|---------|
 | `retryCountOnFailure` | Number of times to retry failed tests | 0 |
-| `loggerExtensiveTraceMode` | Enable detailed trace logging | true |
-| `defaultElementWaitTimeout` | Element wait timeout in seconds | 60 |
+| `defaultElementWaitTimeout` | Element wait timeout in seconds | 0 |
 | `defaultElementPollingTime` | Polling interval in milliseconds | 50 |
+| `recordGUITestExecution` | Enable automatic video recording of test execution | true |
+| `attachRecordedGUITestExecutionToReport` | Embed MP4 in Allure report | true |
+| `attachRecordedGUITestExecutionToReportOnlyOnFailure` | Only attach video on test failure | false |
 
 ## Allure Reporting Configuration
 
@@ -62,16 +70,56 @@ allure.report.directory=Test-Output/Reports/Allure/allure-report
 | `allure.report.directory` | Directory for generated report | Test-Output/Reports/Allure/allure-report |
 
 
+## Notifications Configuration
+
+The `notifications.properties` file configures the test reporting system for email and Slack:
+
+```properties
+notification.enabled=true
+notification.email.enabled=true
+notification.slack.enabled=false
+# ... other SMTP and webhook settings
+```
+
+## AI & Codegen Configuration
+
+The `ai-config.properties` file controls self-healing strategies, ONNX thresholds, and LLM provider settings:
+
+```properties
+# Healing strategy: DISABLED | HEAL_AND_CONTINUE | HEAL_AND_NOTIFY | SUGGEST_ONLY
+ai.healing.strategy=DISABLED
+
+# ONNX semantic similarity threshold for Tier-2 healing (0.0 – 1.0)
+ai.onnx.similarityThreshold=0.70
+
+# Confidence threshold before a healed locator is stored as a new baseline
+ai.healing.storeThreshold=0.85
+
+# LLM provider for Tier-3 healing: openai | gemini | claude | azure-openai | custom
+ai.llm.provider=
+
+# API key (can reference an environment variable)
+ai.llm.apiKey=${LLM_API_KEY}
+
+# Model to use for LLM-powered healing
+ai.llm.model=gemini-3.1-flash-lite
+
+# Base URL for the LLM API endpoint
+ai.llm.baseUrl=https://generativelanguage.googleapis.com/v1beta/
+```
+
+See the [Self-Healing guide](/ai/self-healing) for a full list of properties and configuration examples.
+
 ## Using Properties in Tests
 
 You can access these properties in your tests through the PropertyHelper:
 
 ```java
-import Ellithium.core.utilities.PropertyHelper;
+import Ellithium.Utilities.helpers.PropertyHelper;
 
 // Get a property value
-String timeout = PropertyHelper.getProperty("config.properties", "defaultElementWaitTimeout");
+String timeout = PropertyHelper.getDataFromProperties("config.properties", "defaultElementWaitTimeout");
 
 // Set a property value
-PropertyHelper.setProperty("config.properties", "retryCountOnFailure", "2");
+PropertyHelper.setDataToProperties("config.properties", "retryCountOnFailure", "2");
 ```

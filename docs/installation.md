@@ -8,7 +8,7 @@ Set up Ellithium in your Java project with these simple steps.
 
 ## Prerequisites
 
-- Java Development Kit (JDK) 21 or higher
+- Java Development Kit (JDK) 25 or higher
 - Maven 3.8.1 or higher (3.9.9 recommended)
 - Your favorite IDE (IntelliJ IDEA or VS Code recommended)
 
@@ -30,8 +30,8 @@ Your `pom.xml` should include these essential configurations:
 
 ```xml
 <properties>
-    <maven.compiler.source>21</maven.compiler.source>
-    <maven.compiler.target>21</maven.compiler.target>
+    <maven.compiler.source>25</maven.compiler.source>
+    <maven.compiler.target>25</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <version>${LatestEllithiumVersion}</version> // check the latest version on the repo
 </properties>
@@ -44,8 +44,8 @@ Your `pom.xml` should include these essential configurations:
             <artifactId>maven-compiler-plugin</artifactId>
             <version>${LatestVersion}</version>
             <configuration>
-                <source>21</source>
-                <target>21</target>
+                <source>25</source>
+                <target>25</target>
             </configuration>
         </plugin>
 

@@ -38,7 +38,7 @@ The notification system automatically integrates with your existing TestNG tests
 ## Quick Start
 
 ### 1. Enable Notifications
-Update your `config.properties` file:
+Update your `notifications.properties` file:
 
 ```properties
 # Enable notifications globally

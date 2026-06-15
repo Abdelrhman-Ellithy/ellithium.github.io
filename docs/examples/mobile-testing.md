@@ -125,8 +125,8 @@ public class NotesTests {
     public void testDeleteNote() {
         // Long press on the note to open context menu
         By savedNoteTitle = AppiumBy.xpath("//android.widget.TextView[@text='Shopping List']");
-        // Long press using AndroidActions
-        actions.androidActions().longClickGesture(driver.findElement(savedNoteTitle), 1500);
+        // Long press using MobileActions
+        actions.mobileActions().longPress(savedNoteTitle, 1.5);
         
         By deleteOption = AppiumBy.xpath("//android.widget.TextView[@text='Delete']");
         actions.elements().clickOnElement(deleteOption);
@@ -224,9 +224,9 @@ DriverActions actions = new DriverActions(driver);
 actions.elements().clickOnElement(AppiumBy.id("button_id"));
 actions.elements().sendData(AppiumBy.id("input_field"), "Test data");
 
-// Android gestures
-actions.androidActions().tap(driver.findElement(AppiumBy.id("element_id")));
-actions.androidActions().longClickGesture(200, 400, 1200);
+// Cross-platform and native mobile gestures
+actions.mobileActions().tap(AppiumBy.id("element_id"));
+actions.mobileActions().longPress(200.0, 400.0, 1.2);
 
 // Wait operations
 actions.elements().waitForElementToBeVisible(AppiumBy.id("loading_indicator"));

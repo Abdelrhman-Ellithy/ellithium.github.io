@@ -31,11 +31,11 @@ From this single point, you can access all the specialized interaction classes:
 | [Navigation Actions](/interactions/navigation-actions) | `actions.navigation()` | Browser navigation |
 | [Wait Actions](/interactions/wait-actions) | `actions.waits()` | Specialized wait conditions |
 | [Window Actions](/interactions/window-actions) | `actions.windows()` | Window management |
-| [Key Press Actions](/interactions/key-press-actions) | `actions.keyPress()` | Keyboard interactions |
+| [Key Press Actions](/interactions/key-press-actions) | `actions.mobileActions()` | Android native key events (BACK, HOME, volume, etc.) |
 | [Select Actions](/interactions/select-actions) | `actions.select()` | Dropdown operations |
-| [Screen Recorder Actions](/interactions/screen-recorder-actions) | `actions.screenRecorder()` | Video recording of test sessions |
-| [Android Actions](/interactions/android-actions) | `actions.androidActions()` | Android-specific mobile gestures |
-| [iOS Actions](/interactions/ios-actions) | `actions.iosActions()` | iOS-specific mobile gestures |
+| [Screen Recorder Actions](/interactions/screen-recorder-actions) | `new ScreenRecorderActions(driver)` | Video recording of test sessions |
+| [Mobile Actions](/interactions/mobile-actions) | `actions.mobileActions()` | Cross-platform and native mobile gestures |
+| [Cookie Actions](/interactions/cookie-actions) | `actions.cookies()` | Browser cookie management |
 
 ## Getting Started with Interactions
 
@@ -62,4 +62,4 @@ actions.waits().waitForElementToBeVisible(By.id("welcomeMessage"), 10, 500);
 
 ## Web vs. Mobile Interactions
 
-Most interaction classes work identically for both web and mobile testing, allowing you to use the same API across different platforms. For mobile-specific functionality, use the `androidActions()` and `iosActions()` methods. 
+Most interaction classes work identically for both web and mobile testing, allowing you to use the same API across different platforms. For mobile-specific functionality or complex cross-platform touch gestures, use the `mobileActions()` method. 

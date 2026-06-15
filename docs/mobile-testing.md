@@ -11,7 +11,8 @@ Ellithium provides robust support for mobile testing on Android and iOS platform
 Ellithium provides a unified interaction API that works for both web and mobile testing. Most interaction classes are accessed through the `DriverActions` class:
 
 - [Element Actions](interactions/element-actions) - Basic element interactions like click, type, etc.
-- [Keyboard Actions](interactions/key-press-actions) - Keyboard and device key press operations
+- [Mobile Actions](interactions/mobile-actions) - Unified cross-platform and platform-specific gestures (swipe, tap, pinch, native keys).
+- [Keyboard Actions](interactions/key-press-actions) - Keyboard operations for web.
 
 For a complete overview of all interactions, see the [Interactions Overview](interactions/interactions) page.
 
@@ -26,8 +27,11 @@ actions.elements().clickOnElement(By.id("login_button"));
 actions.elements().sendData(By.id("username_field"), "testuser");
 actions.elements().waitForElementToBeVisible(By.id("progress_indicator"));
 
-// Mobile-specific key operations
-actions.keyPress().pressKey(new KeyEvent(AndroidKey.BACK));
+// Cross-platform gesture
+actions.mobileActions().swipe("up", By.id("list_container"));
+
+// Mobile-specific key operations (Android)
+actions.mobileActions().pressKey(new KeyEvent(AndroidKey.BACK));
 ```
 
 Additionally, Ellithium provides:
@@ -47,6 +51,58 @@ ScreenRecorderActions screenRecorderActions = new ScreenRecorderActions<>(driver
 - Android SDK for Android testing
 - Xcode for iOS testing
 - Real devices or emulators/simulators
+
+### Cloud Testing & App Uploader
+
+If you use cloud providers like BrowserStack, LambdaTest, or Sauce Labs, Ellithium provides the `CloudAppUploader` utility to programmatically upload your `.apk`, `.aab`, or `.ipa` files to their secure cloud storage before test execution.
+
+```java
+import Ellithium.Utilities.cloud.CloudAppUploader;
+import Ellithium.core.driver.CloudProviderType;
+
+// Upload from a local file path — returns the cloud app URL or ID
+String appId = CloudAppUploader.uploadApp(
+    CloudProviderType.BROWSERSTACK,
+    "your_username",
+    "your_access_key",
+    "/path/to/app.apk"
+);
+
+// Upload from a local file path with a custom app ID (BrowserStack custom_id)
+String appIdCustom = CloudAppUploader.uploadApp(
+    CloudProviderType.BROWSERSTACK,
+    "your_username",
+    "your_access_key",
+    "/path/to/app.apk",
+    "MyAndroidApp"
+);
+
+// Upload from a byte array (e.g., loaded from classpath resources)
+byte[] appBytes = Files.readAllBytes(Paths.get("/path/to/app.apk"));
+String appIdBytes = CloudAppUploader.uploadApp(
+    CloudProviderType.SAUCE_LABS,
+    "your_username",
+    "your_access_key",
+    appBytes,
+    "app.apk"
+);
+
+// Delete a previously uploaded app
+boolean deleted = CloudAppUploader.deleteApp(
+    CloudProviderType.BROWSERSTACK,
+    "your_username",
+    "your_access_key",
+    "bs://app-id-to-delete"
+);
+
+// Pass the returned appId to your cloud driver configuration
+CloudMobileDriverConfig cloudConfig = new CloudMobileDriverConfig()
+    .setCloudProvider(CloudProviderType.BROWSERSTACK)
+    .setUsername("your_username")
+    .setAccessKey("your_access_key")
+    .setDriverType(MobileDriverType.Android)
+    .setApp(appId);
+```
 
 ## Android Testing
 
@@ -146,10 +202,14 @@ actions.elements().clickOnElement(By.id("login_button"));
 actions.elements().sendData(By.id("username_field"), "testuser");
 actions.elements().waitForElementToBeVisible(By.id("progress_indicator"));
 
+// Cross-platform mobile gestures
+actions.mobileActions().tap(By.id("login_button"));
+actions.mobileActions().swipe("left", By.id("carousel_view"));
+
 // Mobile-specific key press operations for Android
-actions.keyPress().pressKey(new KeyEvent(AndroidKey.BACK));
-actions.keyPress().longPressKey(new KeyEvent(AndroidKey.HOME), 1000);
-actions.keyPress().longPressAndroidKey(AndroidKey.VOLUME_UP, 500);
+actions.mobileActions().pressKey(new KeyEvent(AndroidKey.BACK));
+actions.mobileActions().longPressKey(new KeyEvent(AndroidKey.HOME), 1000);
+actions.mobileActions().longPressAndroidKey(AndroidKey.VOLUME_UP, 500);
 ```
 
 ## Mobile-Specific Locator Strategies

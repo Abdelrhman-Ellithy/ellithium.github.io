@@ -26,10 +26,10 @@ actions.waits();        // Wait utilities
 actions.select();       // Native <select> dropdowns
 actions.navigation();   // Browser navigation
 actions.mouse();        // Mouse operations
+actions.cookies();      // Cookie management
 
 // Mobile-specific
-actions.androidActions();  // Android gestures & key events
-actions.iosActions();      // iOS gestures
+actions.mobileActions(); // Cross-platform and native mobile gestures
 ```
 
 ## Detailed Documentation
@@ -47,8 +47,8 @@ Each interaction type has its own detailed documentation:
 - [Key Press Actions](key-press-actions) - Android key events
 - [Select Actions](select-actions) - Dropdown handling
 - [Screen Recorder Actions](screen-recorder-actions) - Video recording
-- [Android Actions](android-actions) - Android gestures
-- [iOS Actions](ios-actions) - iOS gestures
+- [Mobile Actions](mobile-actions) - Cross-platform and native mobile gestures
+- [Cookie Actions](cookie-actions) - Cookie management
 
 ## Element Interactions
 
@@ -141,9 +141,7 @@ actions.navigation().navigateForward();
 ## Mobile Modules
 
 ```java
-// Android gestures
-actions.androidActions().swipeGesture(100, 1200, 900, 1200, 300);
-
-// iOS gestures
-actions.iosActions().tap(120f, 220f);
+// Cross-platform mobile gestures
+actions.mobileActions().tap(120f, 220f);
+actions.mobileActions().swipe("up", By.id("list"));
 ```

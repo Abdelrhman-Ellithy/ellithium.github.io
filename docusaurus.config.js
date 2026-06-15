@@ -11,7 +11,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Ellithium User Guide',
-  tagline: 'A powerful Java-based test automation framework',
+  tagline: 'AI-powered Java test automation for Web, Mobile, API & Database',
   favicon: 'img/logo.png',
 
   // Set the production url of your site here
@@ -111,6 +111,33 @@ const config = {
               {
                 label: 'Database Testing',
                 to: '/database-testing',
+              },
+            ],
+          },
+          {
+            type: 'dropdown',
+            label: '✨ AI Module',
+            position: 'left',
+            items: [
+              {
+                label: 'AI Overview',
+                to: '/ai',
+              },
+              {
+                label: '🩺 Self-Healing Locators',
+                to: '/ai/self-healing',
+              },
+              {
+                label: '🎬 Codegen Recorder',
+                to: '/ai/codegen-recorder',
+              },
+              {
+                label: '🧠 AI Engine & NL Codegen',
+                to: '/ai/ai-engine',
+              },
+              {
+                label: '⚙️ AI Configuration',
+                to: '/utilities/property-files',
               },
             ],
           },
@@ -217,6 +244,10 @@ const config = {
                 label: 'Helper Utilities',
                 to: '/examples/helpers',
               },
+              {
+                label: '✨ AI-Powered Testing',
+                to: '/examples/ai-testing',
+              },
             ],
           },
           {
@@ -264,6 +295,31 @@ const config = {
               {
                 label: 'Mobile Testing',
                 to: '/mobile-testing',
+              },
+            ],
+          },
+          {
+            title: '✨ AI Module',
+            items: [
+              {
+                label: 'AI Overview',
+                to: '/ai',
+              },
+              {
+                label: 'Self-Healing Locators',
+                to: '/ai/self-healing',
+              },
+              {
+                label: 'Codegen Recorder',
+                to: '/ai/codegen-recorder',
+              },
+              {
+                label: 'AI Engine',
+                to: '/ai/ai-engine',
+              },
+              {
+                label: 'AI Configuration',
+                to: '/utilities/property-files',
               },
             ],
           },
@@ -331,6 +387,10 @@ const config = {
               {
                 label: 'Mobile Tests',
                 to: '/examples/mobile-testing',
+              },
+              {
+                label: 'AI-Powered Testing',
+                to: '/examples/ai-testing',
               },
             ],
           },

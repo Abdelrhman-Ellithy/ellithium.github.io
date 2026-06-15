@@ -21,7 +21,7 @@ The email notification system supports:
 
 ### 1. Basic Configuration
 
-Add these properties to your `config.properties` file:
+Add these properties to your `notifications.properties` file:
 
 ```properties
 # Enable email notifications
@@ -291,7 +291,7 @@ Error: Connection timeout
 Enable debug logging to troubleshoot email issues:
 
 ```properties
-# Add to config.properties for debugging
+# Add to notifications.properties for debugging
 logging.level.Ellithium.core.reporting.notification=DEBUG
 ```
 

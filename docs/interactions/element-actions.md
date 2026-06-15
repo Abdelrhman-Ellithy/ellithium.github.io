@@ -72,11 +72,72 @@ List<String> aria = actions.elements().getPropertyFromMultipleElements(
 ## Element Collections
 
 ```java
-// Get elements
-List<WebElement> cards = actions.elements().getElements(By.cssSelector(".card"), 10, 200);
-
-// Click multiple
+// Click every element matching a locator
 actions.elements().clickOnMultipleElements(By.cssSelector(".list .item"), 10, 200);
+actions.elements().clickOnMultipleElements(By.cssSelector(".list .item")); // default timeout
+
+// Get raw Selenium elements (use driver.findElements directly — ElementActions has no getElements wrapper)
+List<WebElement> cards = driver.findElements(By.cssSelector(".card"));
+```
+
+## Clear Element
+
+```java
+// Clear the value of an input or textarea
+actions.elements().clearElement(By.id("search"));
+actions.elements().clearElement(By.id("search"), 10);         // custom timeout
+actions.elements().clearElement(By.id("search"), 10, 200);    // custom timeout + polling
+```
+
+## Scroll Into View
+
+```java
+// Scroll the page until the element is visible in the viewport
+actions.elements().scrollIntoView(By.id("footer-section"));
+actions.elements().scrollIntoView(By.id("footer-section"), 10);        // custom timeout
+actions.elements().scrollIntoView(By.id("footer-section"), 10, 200);   // custom timeout + polling
+```
+
+## Element State Checks
+
+All state-check methods return `boolean` and accept optional `(int timeout)` or `(int timeout, int pollingEvery)` overloads.
+
+```java
+// Is element in the DOM (may not be visible)?
+boolean present  = actions.elements().isElementPresent(By.id("modal"));
+boolean present  = actions.elements().isElementPresent(By.id("modal"), 5, 200);
+
+// Is element visible on the page?
+boolean visible  = actions.elements().isElementDisplayed(By.id("banner"));
+boolean visible  = actions.elements().isElementDisplayed(By.id("banner"), 5, 200);
+
+// Is element enabled (not disabled)?
+boolean enabled  = actions.elements().isElementEnabled(By.id("submit"));
+boolean enabled  = actions.elements().isElementEnabled(By.id("submit"), 5, 200);
+
+// Is element selected (checkbox / radio)?
+boolean checked  = actions.elements().isElementSelected(By.id("agree"));
+boolean checked  = actions.elements().isElementSelected(By.id("agree"), 5, 200);
+
+// Is element clickable (visible + enabled)?
+boolean clickable = actions.elements().isElementClickable(By.id("buy-now"));
+boolean clickable = actions.elements().isElementClickable(By.id("buy-now"), 5, 200);
+```
+
+## Text and Attribute Checks
+
+```java
+// Does the element's text contain the given substring?
+boolean hasSale   = actions.elements().isTextContains(By.id("promo-banner"), "SALE");
+boolean hasSale   = actions.elements().isTextContains(By.id("promo-banner"), "SALE", 5, 200);
+
+// Does the element's attribute value contain the given substring?
+boolean hasActive = actions.elements().isAttributeContains(By.id("nav"), "class", "active");
+boolean hasActive = actions.elements().isAttributeContains(By.id("nav"), "class", "active", 5, 200);
+
+// Does the element's text exactly equal the expected string?
+boolean exact     = actions.elements().isTextEqual(By.id("status"), "Order Confirmed");
+boolean exact     = actions.elements().isTextEqual(By.id("status"), "Order Confirmed", 5, 200);
 ```
 
 ## File Uploads

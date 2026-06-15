@@ -7,12 +7,12 @@ description: Complete configuration options for the notification system
 
 # Notification Configuration
 
-The notification system is configured through the `config.properties` file. This guide covers all available configuration options and their usage.
+The notification system is configured through the `notifications.properties` file. This guide covers all available configuration options and their usage.
 
 ## Configuration File Location
 
 ```
-config.properties
+notifications.properties
 ```
 
 ## Basic Configuration

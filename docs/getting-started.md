@@ -7,7 +7,7 @@ sidebar_position: 2
 Set up Ellithium in your project with these simple steps.
 
 ## Prerequisites
-- Java Development Kit (JDK) 21
+- Java Development Kit (JDK) 25
 - Maven 3.8.1+ (3.9.9 recommended)
 - Your favorite IDE (IntelliJ IDEA recommended)
 
