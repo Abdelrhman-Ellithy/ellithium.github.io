@@ -9,7 +9,7 @@ Set up Ellithium in your Java project with these simple steps.
 ## Prerequisites
 
 - Java Development Kit (JDK) 25 or higher
-- Maven 3.8.1 or higher (3.9.9 recommended)
+- Maven 3.8.1 or higher (3.9.16 recommended)
 - Your favorite IDE (IntelliJ IDEA or VS Code recommended)
 
 ## Step 1: Add Maven Dependency
