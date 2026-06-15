@@ -83,13 +83,13 @@ notification.slack.enabled=false
 
 ## AI & Codegen Configuration
 
-The `ai-config.properties` file controls self-healing strategies, ONNX thresholds, and LLM provider settings:
+The `ai-config.properties` file controls self-healing strategies, local AI thresholds, and LLM provider settings:
 
 ```properties
 # Healing strategy: DISABLED | HEAL_AND_CONTINUE | HEAL_AND_NOTIFY | SUGGEST_ONLY
 ai.healing.strategy=DISABLED
 
-# ONNX semantic similarity threshold for Tier-2 healing (0.0 – 1.0)
+# Embedded local AI semantic similarity threshold for Tier-2 healing (0.0 – 1.0)
 ai.onnx.similarityThreshold=0.70
 
 # Confidence threshold before a healed locator is stored as a new baseline

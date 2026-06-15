@@ -22,7 +22,7 @@ Self-healing is transparent by design. Enable it in `src/test/resources/ai-confi
 # Choose a strategy (default is DISABLED)
 ai.healing.strategy=HEAL_AND_NOTIFY
 
-# Tier 2: ONNX semantic similarity floor (0.0–1.0)
+# Tier 2: embedded local AI semantic similarity floor (0.0–1.0)
 ai.onnx.similarityThreshold=0.75
 
 # Tier 3: LLM (only reached if Tier 1 & 2 fail)

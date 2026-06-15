@@ -40,16 +40,16 @@ Tier 1 is the fastest path: it looks up a previously recorded fingerprint for th
 ai.healing.baselineTtlDays=30
 ```
 
-### Tier 2 — Local ONNX Model (Semantic Matching)
+### Tier 2 — Embedded Local AI Model (Semantic Matching)
 
-Tier 2 uses an on-device ONNX model to score DOM candidates by semantic similarity.
+Tier 2 uses an embedded local AI model to score DOM candidates by semantic similarity.
 
 ```properties
 # Minimum combined score for Tier 2 to accept a candidate.
 # Default: 0.70
 ai.onnx.similarityThreshold=0.75
 
-# Maximum DOM candidates passed to the ONNX scorer per attempt.
+# Maximum DOM candidates passed to the local AI scorer per attempt.
 # Default: 15
 ai.onnx.maxCandidates=15
 

@@ -55,7 +55,7 @@ const aiFeatures = [
     icon: '🩺',
     badge: 'Self-Healing',
     title: '3-Tier Self-Healing Locators',
-    description: 'When a locator breaks, the engine cascades through three tiers automatically: historical baselines (Tier 1), on-device ONNX semantic matching (Tier 2), and LLM-powered visual reasoning (Tier 3). Tests keep running without manual intervention.',
+    description: 'When a locator breaks, the engine cascades through three tiers automatically: historical baselines (Tier 1), embedded local AI semantic matching (Tier 2), and LLM-powered visual reasoning (Tier 3). Tests keep running without manual intervention.',
     link: '/ai/self-healing',
     linkLabel: 'Explore Self-Healing →',
   },
