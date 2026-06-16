@@ -28,7 +28,7 @@ SQLDatabaseProvider mysql = new SQLDatabaseProvider(
     "username",
     "password",
     "localhost",
-    3306,
+    "3306",
     "test_db"
 );
 
@@ -38,7 +38,7 @@ SQLDatabaseProvider sqlServer = new SQLDatabaseProvider(
     "username",
     "password",
     "localhost",
-    1433,
+    "1433",
     "test_db"
 );
 
@@ -48,7 +48,7 @@ SQLDatabaseProvider oracleSid = new SQLDatabaseProvider(
     "username",
     "password",
     "localhost",
-    1521,
+    "1521",
     "ORCL"
 );
 
@@ -58,7 +58,7 @@ SQLDatabaseProvider oracleService = new SQLDatabaseProvider(
     "username",
     "password",
     "localhost",
-    1521,
+    "1521",
     "service_name"
 );
 
@@ -215,9 +215,10 @@ couchbase.clearAllCaches();
 ```java
 // Connect to Redis with caching configuration
 RedisDatabaseProvider redis = new RedisDatabaseProvider(
-    "redis://localhost:6379",
-    30,  // Cache TTL in minutes
-    1000 // Maximum cache size
+    "localhost",  // host
+    6379,         // port
+    30,           // Cache TTL in minutes
+    1000          // Maximum cache size
 );
 
 // Set key-value

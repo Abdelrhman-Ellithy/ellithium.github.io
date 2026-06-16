@@ -90,7 +90,7 @@ The `ai-config.properties` file controls self-healing strategies, local AI thres
 ai.healing.strategy=DISABLED
 
 # Embedded local AI semantic similarity threshold for Tier-2 healing (0.0 – 1.0)
-ai.onnx.similarityThreshold=0.70
+ai.onnx.similarityThreshold=0.60
 
 # Confidence threshold before a healed locator is stored as a new baseline
 ai.healing.storeThreshold=0.85

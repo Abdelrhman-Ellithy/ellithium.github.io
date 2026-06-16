@@ -46,7 +46,7 @@ Tier 2 uses an embedded local AI model to score DOM candidates by semantic simil
 
 ```properties
 # Minimum combined score for Tier 2 to accept a candidate.
-# Default: 0.70
+# Default: 0.60
 ai.onnx.similarityThreshold=0.75
 
 # Maximum DOM candidates passed to the local AI scorer per attempt.
@@ -120,6 +120,11 @@ ai.healing.storeThreshold=0.85
 # baseline to be accepted. Set 0.0 to skip this cross-validation entirely.
 # Default: 0.40
 ai.healing.tier3BaselineMatchFloor=0.40
+
+# Maximum number of locators stored per page in the baseline store.
+# Set 0 for unlimited.
+# Default: 0
+ai.healing.baselineMaxLocators=0
 ```
 
 ### Vision (Screenshot-Assisted Healing)

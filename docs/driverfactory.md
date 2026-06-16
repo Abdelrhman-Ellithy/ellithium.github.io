@@ -163,13 +163,12 @@ MobileDriverConfig mobileConfig = new MobileDriverConfig(
 );
 AndroidDriver mobileDriver = DriverFactory.getNewDriver(mobileConfig);
 
-// Cloud Mobile driver config
+// Cloud Mobile driver config — quickest form: provider + credentials + driver type
 CloudMobileDriverConfig cloudConfig = new CloudMobileDriverConfig(
-    MobileDriverType.IOS,
     CloudProviderType.SAUCE_LABS,
-    "storage:filename=app.ipa",
-    "iPhone 14 Pro",
-    "16.2"
+    System.getenv("SAUCE_USERNAME"),
+    System.getenv("SAUCE_ACCESS_KEY"),
+    MobileDriverType.IOS
 );
 IOSDriver iosCloudDriver = DriverFactory.getNewDriver(cloudConfig);
 ```
