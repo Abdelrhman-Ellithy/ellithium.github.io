@@ -207,6 +207,12 @@ export default function Home() {
         </div>
 
       </main>
+      <img
+        referrerPolicy="no-referrer-when-downgrade"
+        src="https://static.scarf.sh/a.png?x-pxid=98201aa5-90b3-490c-8655-c6d45282eec7"
+        alt=""
+        style={{position:'absolute',width:'1px',height:'1px',opacity:0,pointerEvents:'none'}}
+      />
     </Layout>
   );
 }
