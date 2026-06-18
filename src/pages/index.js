@@ -82,7 +82,7 @@ function HomepageHeader() {
   return (
     <header className={styles.heroBanner}>
       <div className="container">
-        <div className={styles.heroVersion}>v3.0.0-Beta</div>
+        <div className={styles.heroVersion}>v3.0.0</div>
         <h1 className={styles.heroTitle}>{siteConfig.title}</h1>
         <p className={styles.heroSubtitle}>{siteConfig.tagline}</p>
         <p className={styles.heroDescription}>

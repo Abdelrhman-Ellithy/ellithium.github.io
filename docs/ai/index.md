@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # AI & Codegen Overview
 
-Ellithium 3.0.0-Beta introduces a powerful suite of AI features designed to make your automation code resilient, easier to generate, and extremely intelligent.
+Ellithium 3.0.0 introduces a powerful suite of AI features designed to make your automation code resilient, easier to generate, and extremely intelligent.
 
 ## Core Capabilities
 
