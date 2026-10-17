@@ -30,19 +30,26 @@ Set `ai.healing.strategy` to control what happens after a successful heal:
 ai.healing.strategy=HEAL_AND_NOTIFY
 ```
 
-### Tier 1 — Baseline Store
+### Tier 1 — SQLite-Backed Baseline Store
 
-Tier 1 is the fastest path: it looks up a previously recorded fingerprint for the broken locator.
+Tier 1 is the fastest path: it looks up a previously recorded fingerprint for the broken locator using embedded SQLite storage (`Test-Output/healing-baselines.db`). This provides ACID durability, Write-Ahead Logging (WAL), indexed lookups, and concurrent access without full-file JSON rewriting overhead.
+
+Ellithium automatically creates a human-readable JSON snapshot dual-export (`Test-Output/healing-baselines.json`) on every flush, making baseline diffs easy to inspect and track in version control.
 
 ```properties
 # Days before a stored fingerprint is evicted. Set 0 to disable TTL eviction.
 # Default: 30
 ai.healing.baselineTtlDays=30
+
+# Maximum number of locators stored per page in the baseline store.
+# Set 0 for unlimited.
+# Default: 0
+ai.healing.baselineMaxLocators=0
 ```
 
 ### Tier 2 — Embedded Local AI Model (Semantic Matching)
 
-Tier 2 uses an embedded local AI model to score DOM candidates by semantic similarity.
+Tier 2 uses an embedded local ONNX model (`bge-micro-v2`) and deterministic heuristic scoring to match DOM candidates by semantic similarity, tag compatibility, and structural attributes without calling external APIs.
 
 ```properties
 # Minimum combined score for Tier 2 to accept a candidate.
@@ -61,18 +68,33 @@ ai.onnx.hardCandidateLimit=300
 # Confidence score assigned when no stored baseline exists (cold-start heal).
 # Default: 0.65
 ai.healing.semanticFallbackScore=0.65
+
+# Ambiguity margin check. When top candidates have scores closer than this threshold,
+# distinctive keyword tie-breaking is invoked. If unresolved, the engine abstains to avoid false heals.
+# Default: 0.04
+ai.healing.ambiguityMargin=0.04
 ```
+
+#### Ambiguity Margin & Keyword Tie-Breaking
+When the top two candidate elements score within `ai.healing.ambiguityMargin` (e.g., difference < 0.04), traditional healing engines risk selecting the wrong element (such as confusing two adjacent form fields). Ellithium analyzes distinctive non-generic keywords from the target locator:
+- If a candidate matches unique tokens (e.g., `firefox` in locator `radio-option-firefox`), it is safely prioritized.
+- If both or neither match and ambiguity remains high, Ellithium intentionally **abstains** from a false-positive heal, preserving test integrity.
+
+#### Action-Directed Label $\leftrightarrow$ Control Bridge
+Modern UI frameworks often place event handlers or visual styling on `<label>` elements while keeping the actual `<input>` hidden or sibling-nested. Ellithium's healing engine features an automatic two-way bridge:
+- **Click / Check / Type**: If a `<label>` is matched, the engine automatically delegates to its associated `<input>` (via `for` attribute or child lookup) so stateful operations like `isSelected()` or `type()` function correctly.
+- **Read / Text**: If an `<input>` is matched during `getText()` or read operations, the engine automatically resolves to the associated `<label>` or descriptive container text.
 
 ### Tier 3 — LLM (Large Language Model)
 
-Tier 3 calls an external LLM when Tier 1 and Tier 2 cannot resolve the element.
+Tier 3 calls an external LLM when Tier 1 and Tier 2 cannot resolve the element. Prompts are sanitized with automatic credential and token redaction before dispatch.
 
 ```properties
 # Set false to disable LLM (Tier 3) while keeping Tier 1 and Tier 2 active.
 # Default: true
 ai.tier3.enabled=true
 
-# LLM provider: openai | gemini | claude | azure-openai | custom
+# LLM provider: openai | gemini | claude | deepseek | groq | qwen | local | custom
 # Default: (empty — Tier 3 disabled until a provider is configured)
 ai.llm.provider=gemini
 
@@ -83,7 +105,7 @@ ai.llm.apiKey=${LLM_API_KEY}
 # Default: gemini-3.1-flash-lite
 ai.llm.model=gemini-3.1-flash-lite
 
-# Base URL for the provider endpoint (required for self-hosted or Azure).
+# Base URL for the provider endpoint (required for self-hosted, Ollama, DeepSeek, or Azure).
 ai.llm.baseUrl=https://generativelanguage.googleapis.com/v1beta/
 
 # Fully-qualified class name of a custom LLMProvider implementation.
@@ -120,11 +142,6 @@ ai.healing.storeThreshold=0.85
 # baseline to be accepted. Set 0.0 to skip this cross-validation entirely.
 # Default: 0.40
 ai.healing.tier3BaselineMatchFloor=0.40
-
-# Maximum number of locators stored per page in the baseline store.
-# Set 0 for unlimited.
-# Default: 0
-ai.healing.baselineMaxLocators=0
 ```
 
 ### Vision (Screenshot-Assisted Healing)
@@ -146,12 +163,13 @@ ai.vision.allowMobile=false
 ai.vision.rca.enabled=false
 ```
 
-### Execution Mode
+### Execution Mode & Proposal Queue
 
 ```properties
 # Controls post-heal source file behavior.
-#   LOCAL — write healed locators back to source files (local development).
-#   CI    — never touch source; generate healing-report.md and telemetry only.
+#   LOCAL         — write healed locators back into Java source files (local dev).
+#   CI            — never touch source; export proposals and telemetry only.
+#   PROPOSAL_ONLY — run heals in memory and export proposals without modifying source.
 # Default: LOCAL
 ai.execution.mode=LOCAL
 
@@ -161,6 +179,11 @@ ai.execution.mode=LOCAL
 # Default: -1 (disabled)
 ai.healing.ciAlertThreshold=-1
 ```
+
+#### CI Proposal Queue Artifacts
+When running in `CI` or `PROPOSAL_ONLY` mode, Ellithium buffers all successful locator repairs that meet `ai.healing.storeThreshold` and exports ready-to-merge artifacts under `Test-Output/healing-proposals/`:
+- **`locator-patches.json`**: Machine-readable JSON manifest containing file path, field name, old locator, new healed locator, confidence score, and tier.
+- **`healing-locators.patch`**: Standard unified diff (`.patch`) file ready to be applied with `git apply` in CI automation or automated pull request bots.
 
 ### Live In-Context Generation Security
 
@@ -182,3 +205,4 @@ ai.telemetry.maxRecords=100000
 ```
 
 > **Security note:** Never commit raw API keys. Always use environment variable placeholders such as `ai.llm.apiKey=${LLM_API_KEY}` and export the variable in your shell or CI/CD secrets.
+

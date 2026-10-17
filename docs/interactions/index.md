@@ -36,6 +36,7 @@ From this single point, you can access all the specialized interaction classes:
 | [Screen Recorder Actions](/interactions/screen-recorder-actions) | `new ScreenRecorderActions(driver)` | Video recording of test sessions |
 | [Mobile Actions](/interactions/mobile-actions) | `actions.mobileActions()` | Cross-platform and native mobile gestures |
 | [Cookie Actions](/interactions/cookie-actions) | `actions.cookies()` | Browser cookie management |
+| [Network Actions](/interactions/network-actions) | `actions.network()` | Network interception, response mocking & BiDi authentication |
 
 ## Getting Started with Interactions
 

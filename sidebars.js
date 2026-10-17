@@ -62,7 +62,8 @@ const sidebars = {
             'interactions/select-actions',
             'interactions/screen-recorder-actions',
             'interactions/mobile-actions',
-            'interactions/cookie-actions'
+            'interactions/cookie-actions',
+            'interactions/network-actions'
           ]
         },
         {

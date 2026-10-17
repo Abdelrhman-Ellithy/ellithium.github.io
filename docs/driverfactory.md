@@ -179,9 +179,128 @@ IOSDriver iosCloudDriver = DriverFactory.getNewDriver(cloudConfig);
 // Get current thread's driver
 WebDriver currentDriver = DriverFactory.getCurrentDriver();
 
+// Check if driver is actively bound and alive on current thread/scope
+boolean alive = DriverFactory.isDriverAlive();
+
 // Quit and cleanup
 DriverFactory.quitDriver();
 ```
+
+## Declarative Test Fixtures (`@WithDriver`)
+
+Ellithium provides declarative test fixtures via the [`@WithDriver`](file:///C:/Users/lenovo/IdeaProjects/Ellithium-projects/Ellithium/src/main/java/Ellithium/core/execution/fixtures/WithDriver.java) annotation and [`DriverFixtureProvider`](file:///C:/Users/lenovo/IdeaProjects/Ellithium-projects/Ellithium/src/main/java/Ellithium/core/execution/fixtures/DriverFixtureProvider.java). This completely eliminates boilerplate `@BeforeMethod` and `@AfterMethod` lifecycle code, automatically instantiating thread-safe drivers, injecting interaction utilities directly into test parameters, and closing sessions after test execution.
+
+### Key Capabilities
+
+- **Class or Method Scoping**: Annotate the test class to provide a default configuration for all test methods, or annotate individual methods to override browser type, headless mode, or flags.
+- **Direct Parameter Injection**: Test methods can declare any combination of strongly-typed interaction classes as parameters. Ellithium's fixture provider resolves and injects them automatically.
+- **Automatic Lifecycle Cleanup**: With `autoQuit = true` (default), the driver is cleanly terminated and evicted upon test completion.
+- **Seamless TestNG Integration**: Automatically wired by Ellithium's `CustomTestNGListener`, or explicitly bound using `DriverFixtureProvider.FIXTURE_DATA_PROVIDER`.
+
+### Supported Injectable Parameters
+
+You can declare any of the following types as parameters in your `@WithDriver` test methods in any order:
+
+| Injectable Type | Description |
+|---|---|
+| `WebDriver` | The active, thread-safe browser driver instance. |
+| `DriverActions<WebDriver>` | Root action container wrapping the active session. |
+| `ElementActions` | High-level DOM interaction engine (clicks, inputs, hover, transparent Shadow DOM). |
+| `WaitActions` | Explicit and dynamic synchronization utilities. |
+| `NavigationActions` | URL navigation, back/forward history, and page refresh operations. |
+| `MouseActions` | Advanced mouse movements, drag-and-drop, context clicks, and offsets. |
+| `JavaScriptActions` | Asynchronous and synchronous JavaScript script executions. |
+| `AlertActions` | Browser modal dialog interactions (accept, dismiss, send prompt text). |
+| `SelectActions` | HTML `<select>` dropdown handling (by visible text, value, or index). |
+| `WindowActions` | Multi-window, browser tab switching, and sizing controls. |
+| `FrameActions` | Iframe switching (by name, ID, index, or locator). |
+| `CookieActions` | Browser cookie inspection, injection, and deletion. |
+| `NetworkActions` | WebDriver BiDi network interception, auth handling, and request mocking. |
+| `Sleep` | Fluent pause and sleep helpers. |
+| `LocalDriverConfig` | The underlying resolved configuration object. |
+| `ITestContext` | TestNG execution context. |
+
+### Example: Declarative Fixture Injection
+
+```java
+import Ellithium.Utilities.interactions.ElementActions;
+import Ellithium.Utilities.interactions.WaitActions;
+import Ellithium.Utilities.interactions.NetworkActions;
+import Ellithium.core.driver.LocalDriverType;
+import Ellithium.core.execution.fixtures.WithDriver;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.testng.annotations.Test;
+
+// Class-level defaults: Chrome headless
+@WithDriver(type = LocalDriverType.Chrome, headless = true)
+public class CheckoutFixtureTest {
+
+    private final By searchBox = By.id("search");
+    private final By submitBtn = By.cssSelector("button[type='submit']");
+
+    // Injects ElementActions and WaitActions automatically — zero @BeforeMethod needed!
+    @Test
+    public void testProductSearch(ElementActions elements, WaitActions waits) {
+        elements.type(searchBox, "Mechanical Keyboard");
+        elements.click(submitBtn);
+        waits.waitVisibilityOfElementLocated(By.className("product-card"));
+    }
+
+    // Method-level override: executes on Firefox with full browser UI
+    @Test
+    @WithDriver(type = LocalDriverType.FireFox, headless = false)
+    public void testPaymentGateway(WebDriver driver, ElementActions elements, NetworkActions network) {
+        // Intercept and mock payment confirmation
+        network.mockJsonResponse(
+            url -> url.contains("/api/v1/payment"),
+            200,
+            "{\"status\": \"PAID\", \"transactionId\": \"tx-98765\"}"
+        );
+
+        elements.click(By.id("pay-now-button"));
+        elements.assertElementIsDisplayed(By.id("payment-success-badge"));
+    }
+}
+```
+
+## Java 25 Scoped Values: `runWithDriver`
+
+Ellithium leverages Java 25's modern concurrency primitives (`ScopedValue`) through [`DriverFactory.runWithDriver(...)`](file:///C:/Users/lenovo/IdeaProjects/Ellithium-projects/Ellithium/src/main/java/Ellithium/core/driver/DriverFactory.java#L781-L798).
+
+In modern multithreaded test suites and virtual thread architectures (`Thread.ofVirtual()`), traditional `ThreadLocal` storage can lead to memory leaks or broken context propagation across structured tasks. `DriverFactory.runWithDriver` binds the driver and configuration immutably to a Java 25 `ScopedValue` context:
+
+```java
+import Ellithium.core.driver.DriverFactory;
+import Ellithium.core.driver.LocalDriverConfig;
+import Ellithium.core.driver.LocalDriverType;
+import org.openqa.selenium.WebDriver;
+
+LocalDriverConfig config = new LocalDriverConfig(LocalDriverType.Chrome);
+WebDriver driver = DriverFactory.getNewDriver(config);
+
+// Run a code block within an immutable ScopedValue context
+DriverFactory.runWithDriver(driver, config, () -> {
+    // Child virtual threads and StructuredTaskScope workers safely inherit the driver
+    Thread.ofVirtual().start(() -> {
+        WebDriver scopedDriver = DriverFactory.getCurrentDriver();
+        scopedDriver.get("https://example.com");
+    });
+});
+// Driver context is automatically unbound and cleaned up deterministically upon scope exit
+```
+
+### Health Check: `DriverFactory.isDriverAlive()`
+
+You can non-destructively check whether an active browser session exists and is responsive without throwing unexpected `NoSuchSessionException` or `NullPointerException` errors:
+
+```java
+if (DriverFactory.isDriverAlive()) {
+    WebDriver driver = DriverFactory.getCurrentDriver();
+    // Safe to perform driver-level actions
+}
+```
+
 
 ## Default Configuration Values
 

@@ -159,6 +159,64 @@ All element actions automatically wait for elements to be in the appropriate sta
 - **Clickability**: Elements are waited to be clickable before clicking
 - **Presence**: Elements are waited to be present in DOM before operations
 
+## Transparent Shadow DOM Support
+
+Modern web applications frequently encapsulate UI components inside Shadow DOM trees (e.g. Web Components, Lit, Salesforce LWC). Standard Selenium locators cannot pierce shadow roots without complex JavaScript workarounds.
+
+Ellithium features **native transparent Shadow DOM piercing**. You can locate elements inside open shadow roots using standard CSS selectors separated by the `>>>` shadow delimiter:
+
+```java
+// Single-level shadow root: host component >>> target element
+actions.elements().clickOnElement(By.cssSelector("custom-login-form >>> button.submit-btn"));
+
+// Multi-hop nested shadow roots: host1 >>> host2 >>> target element
+actions.elements().sendData(
+    By.cssSelector("app-shell >>> user-profile-card >>> input#email"),
+    "user@example.com"
+);
+```
+
+### How It Works Under the Hood
+1. **W3C Native Resolution**: Ellithium first resolves the shadow host element and uses W3C standard `host.getShadowRoot()` to access the shadow root directly.
+2. **Deep Piercing Fallback**: If the host is not natively supported or if complex selectors are used, Ellithium automatically executes a deep recursive DOM walker to pierce all open shadow roots transparently without test intervention.
+
+---
+
+## Structured Typed Locators (`TypedLocator`)
+
+In addition to standard Selenium `By` locators, Ellithium provides the `TypedLocator` immutable record model. `TypedLocator` implements `Supplier<By>` and carries compile-time strategy classification, transparent shadow/iframe host hierarchy, and descriptive metadata for Allure reports and terminal logs:
+
+```java
+import Ellithium.core.locator.TypedLocator;
+import Ellithium.core.locator.LocatorType;
+
+// Standard CSS TypedLocator with a friendly reporting name
+TypedLocator loginBtn = new TypedLocator(
+    LocatorType.CSS,
+    "#login-button",
+    null,
+    null,
+    "Login Submit Button"
+);
+
+// Shadow DOM TypedLocator targeting an inner button inside a custom host
+TypedLocator submitBtn = new TypedLocator(
+    LocatorType.SHADOW,
+    "button.primary",
+    null,
+    "custom-checkout-card",
+    "Checkout Order Button"
+);
+
+// Directly pass to any ElementActions method
+actions.elements().clickOnElement(submitBtn);
+```
+
+### Fluent Decorators
+- `withFriendlyName(String name)`: Attaches a human-readable label to the locator that appears in Allure steps and log outputs.
+- `withHost(String hostSelector)`: Dynamically binds a shadow or iframe host to the locator.
+- `toBy()` / `get()`: Unwraps into a standard Selenium `By` instance for full interoperability.
+
 ## Error Handling
 
 The class includes comprehensive error handling:

@@ -74,6 +74,89 @@ soft.assertNotEmpty(user.getAddress(), "Address should not be empty");
 soft.assertAll();
 ```
 
+---
+
+## Fluent Composable Assertions (`FluentAssert`)
+
+Ellithium features an AssertJ-style fluent assertion API via `FluentAssert`. It provides type-safe, chainable assertions with rich failure reporting:
+
+```java
+import static Ellithium.Utilities.assertion.fluent.FluentAssert.assertThat;
+
+// String assertions
+assertThat(pageTitle)
+    .isNotBlank()
+    .startsWith("Dashboard")
+    .contains("Overview")
+    .hasLength(24);
+
+// Numeric & Comparable assertions
+assertThat(actualCount)
+    .isGreaterThan(0)
+    .isBetween(1, 100);
+
+// Boolean assertions
+assertThat(isLoggedIn).isTrue();
+
+// Collection assertions
+assertThat(userRoles)
+    .isNotEmpty()
+    .hasSize(3)
+    .contains("ADMIN")
+    .doesNotContain("GUEST");
+
+// Map assertions
+assertThat(responseHeaders)
+    .isNotEmpty()
+    .containsKey("Content-Type")
+    .containsEntry("Status", "SUCCESS");
+
+// Object assertions
+assertThat(userResponse)
+    .isNotNull()
+    .isInstanceOf(UserProfile.class);
+```
+
+---
+
+## Scoped Soft Assertions (`SoftAssertScope`)
+
+While traditional soft assertions require manual instantiation and calling `assertAll()`, `SoftAssertScope` enables clean, scoped soft assertion execution. Any fluent assertion invoked within an active `SoftAssertScope` is automatically recorded as a soft assertion and evaluated upon scope completion.
+
+### Lambda Scope Pattern (Recommended)
+
+```java
+import Ellithium.Utilities.assertion.fluent.SoftAssertScope;
+import static Ellithium.Utilities.assertion.fluent.FluentAssert.assertThat;
+
+SoftAssertScope.run(scope -> {
+    assertThat(user.getName()).isEqualTo("Jane Doe");
+    assertThat(user.getEmail()).matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
+    assertThat(user.getAge()).isGreaterThanOrEqualTo(18);
+    assertThat(user.getRoles()).contains("MANAGER");
+}); // Automatically calls assertAll() upon exiting the lambda
+```
+
+### Try-With-Resources Pattern
+
+```java
+try (SoftAssertScope scope = SoftAssertScope.open()) {
+    assertThat(response.getStatusCode()).isEqualTo(200);
+    assertThat(response.getBody()).contains("id");
+    // If any assertion fails, all failures are accumulated and thrown on close
+}
+```
+
+If multiple assertions fail within a scope, Ellithium compiles a single compound `AssertionError` listing every failure clearly in logs and Allure reports:
+
+```
+The following 2 soft assertion(s) failed:
+1) Expected 'Jane' but was 'John'
+2) Expected age >= 21 but was 19
+```
+
+---
+
 ## Key Features
 
 ### Enhanced Logging
