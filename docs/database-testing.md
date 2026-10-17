@@ -4,7 +4,7 @@ sidebar_position: 6
 
 # Database Testing
 
-Ellithium provides comprehensive support for both SQL and NoSQL database testing with built-in caching mechanisms for performance optimization.
+Ellithium provides comprehensive support for both SQL and NoSQL database testing. Queries and updates are executed live against the database with connection pooling, transactional rollback capabilities, and parameterized sanitization — guaranteeing zero stale-data artifacts across test suites.
 
 ## Supported Database Types
 
@@ -169,23 +169,17 @@ mongo.createIndex("users", "email", true); // unique index on email field
 
 // Health check
 boolean isHealthy = mongo.isHealthy();
-
-// Cache management
-mongo.clearCache("query_key");
-mongo.clearAllCaches();
 ```
 
 ### Couchbase
 
 ```java
-// Connect to Couchbase with caching configuration
+// Connect to Couchbase
 CouchbaseDatabaseProvider couchbase = new CouchbaseDatabaseProvider(
     "couchbase://localhost",
     "username",
     "password",
-    "default",
-    30,  // Cache TTL in minutes
-    1000 // Maximum cache size
+    "default"
 );
 
 // Insert document
@@ -198,28 +192,20 @@ couchbase.upsertDocument("user::1234", user);
 // Get document
 JsonObject result = couchbase.getDocument("user::1234");
 
-// Query documents
+// Query documents live
 String query = "SELECT * FROM default WHERE type = 'user'";
 List<JsonObject> users = couchbase.query(query);
 
 // Health check
 boolean isHealthy = couchbase.isHealthy();
-
-// Cache management
-couchbase.clearCache("query_key");
-couchbase.clearAllCaches();
 ```
 
 ### Redis
 
 ```java
-// Connect to Redis with caching configuration
-RedisDatabaseProvider redis = new RedisDatabaseProvider(
-    "localhost",  // host
-    6379,         // port
-    30,           // Cache TTL in minutes
-    1000          // Maximum cache size
-);
+// Connect to Redis using host and port, or a URI connection string
+RedisDatabaseProvider redis = new RedisDatabaseProvider("localhost", 6379);
+// Alternatively: new RedisDatabaseProvider("redis://localhost:6379");
 
 // Set key-value
 redis.set("user:1234:name", "John Doe");
@@ -240,41 +226,46 @@ List<String> users = redis.listRange("recent_users", 0, -1);
 
 // Health check
 boolean isHealthy = redis.isHealthy();
-
-// Cache management
-redis.clearCache("query_key");
-redis.clearAllCaches();
 ```
 
-## Caching Mechanisms
+## Live Execution & Security Hardening
 
-Ellithium implements intelligent caching for database operations to improve performance. The caching system is built on top of Caffeine cache and provides the following features:
+Ellithium executes all database queries and commands directly against the database with zero caching layer, ensuring test isolation and deterministic assertions:
 
-- Configurable cache TTL (Time To Live)
-- Configurable maximum cache size
-- Automatic cache invalidation
-- Per-key cache clearing
-- Global cache clearing
+### Why Zero Database Caching?
+In automated test suites, tests frequently mutate state (creating users, placing orders, updating records). In-memory caching risks serving stale data to subsequent assertions or across parallel worker threads. By removing intermediate caching:
+- Every query returns the exact, ground-truth database state at that millisecond.
+- Tests can safely run concurrently in isolated test containers without cache-invalidation bugs.
+- Eliminates heavy third-party cache dependencies for a leaner, faster classpath.
 
-All NoSQL database providers implement the `NoSQLDatabaseProvider` interface which includes these caching methods:
+### SQL Parameter Sanitization & Injection Defense
+All SQL operations support parameterized queries to prevent SQL injection vulnerabilities and handle character escaping automatically:
 
 ```java
-// Clear cache for specific key
-databaseProvider.clearCache("query_key");
+// Safe parameterized query
+List<Map<String, Object>> users = mysql.executeQuery(
+    "SELECT id, username, email FROM users WHERE status = ? AND age >= ?",
+    "ACTIVE", 18
+);
 
-// Clear all cached results
-databaseProvider.clearAllCaches();
-
-// Add result to cache
-databaseProvider.addToCache("query_key", result);
-
-// Get cached result
-Object cachedResult = databaseProvider.getFromCache("query_key");
+// Parameterized update
+int rowsAffected = mysql.executeUpdate(
+    "UPDATE accounts SET balance = balance - ? WHERE account_id = ?",
+    500.0, "ACC-9921"
+);
 ```
 
-The caching system is enabled by default and can be configured during provider initialization. The cache configuration includes:
+### Transaction Management
+Support for atomic transactions with automatic rollback on assertion failure:
 
-- Cache TTL (Time To Live) in minutes
-- Maximum number of entries in the cache
-- Automatic eviction of expired entries
-- Thread-safe operations 
+```java
+try {
+    mysql.beginTransaction();
+    mysql.executeUpdate("UPDATE inventory SET qty = qty - 1 WHERE item_id = ?", "SKU-01");
+    mysql.executeUpdate("INSERT INTO order_items (order_id, item_id) VALUES (?, ?)", "ORD-1", "SKU-01");
+    mysql.commitTransaction();
+} catch (Exception e) {
+    mysql.rollbackTransaction();
+    throw e;
+}
+```

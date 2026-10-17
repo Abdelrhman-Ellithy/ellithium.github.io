@@ -82,12 +82,13 @@ function HomepageHeader() {
   return (
     <header className={styles.heroBanner}>
       <div className="container">
-        <div className={styles.heroVersion}>v3.0.0</div>
+        <div className={styles.heroVersion}>v3.3.0</div>
         <h1 className={styles.heroTitle}>{siteConfig.title}</h1>
         <p className={styles.heroSubtitle}>{siteConfig.tagline}</p>
         <p className={styles.heroDescription}>
-          A unified Java test automation framework for Web, Mobile, API, and Database testing —
-          now with an AI module for self-healing locators, codegen recording, and natural language test generation.
+          A unified Java 25 test automation framework for Web, Mobile, API, and Database testing —
+          featuring WebDriver BiDi network actions, transparent shadow DOM, declarative fixtures, zero-reflection SPI plugins,
+          and a 3-tier AI self-healing engine.
         </p>
         <div className={styles.buttons}>
           <Link
@@ -143,11 +144,11 @@ export default function Home() {
         <div className={styles.aiSection}>
           <div className="container">
             <div className={styles.aiSectionHeader}>
-              <span className={styles.aiSectionBadge}>NEW IN 3.0</span>
+              <span className={styles.aiSectionBadge}>v3.3.0 RELEASE</span>
               <h2 className={styles.aiSectionTitle}>✨ AI-Powered Testing Module</h2>
               <p className={styles.aiSectionSubtitle}>
-                Ellithium 3.0 ships a full AI subsystem — self-healing locators, an in-browser codegen
-                recorder, and a natural-language-to-code engine. Everything is configured through a single{' '}
+                Ellithium 3.3.0 ships a full AI subsystem — self-healing locators with SQLite baseline persistence,
+                an in-browser codegen recorder, and a natural-language-to-code engine. Everything is configured through a single{' '}
                 <code>ai-config.properties</code> file. Zero cloud dependency required for Tier 1 &amp; 2.
               </p>
             </div>

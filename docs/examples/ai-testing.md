@@ -6,7 +6,7 @@ id: ai-testing
 
 # AI-Powered Testing Examples
 
-This page demonstrates real-world usage of the Ellithium 3.0 AI module: self-healing locators, the Codegen Recorder, and natural-language test generation. All features integrate transparently into the standard Ellithium test structure — no extra frameworks required.
+This page demonstrates real-world usage of the Ellithium 3.3.0 AI module: self-healing locators, the Codegen Recorder, and natural-language test generation. All features integrate transparently into the standard Ellithium test structure — no extra frameworks required.
 
 ---
 
