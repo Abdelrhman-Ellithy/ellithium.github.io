@@ -46,6 +46,11 @@ const sidebars = {
           label: 'Driver Factory'
         },
         {
+          type: 'doc',
+          id: 'plugins',
+          label: 'Plugin Architecture (SPI)'
+        },
+        {
           type: 'category',
           label: 'Interactions',
           items: [

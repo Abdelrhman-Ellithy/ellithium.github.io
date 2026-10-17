@@ -74,15 +74,20 @@ When the driver is created before the `@Test` method begins (e.g., in `@BeforeCl
 | `attachRecordedGUITestExecutionToReport` | `true` | Embeds the MP4 in the Allure report |
 | `attachRecordedGUITestExecutionToReportOnlyOnFailure` | `false` | Only attaches the video when the test fails, reducing report size |
 
-## Async Compilation and `pendingCompilations()`
+## Asynchronous Non-Blocking Compilation & Allure Pipeline
 
-When `attachRecordedGUITestExecutionToReport=false`, the MP4 is compiled in a background thread pool so it does not block test execution. Call `ScreenRecorderActions.pendingCompilations()` to check how many compilations are still in progress. On JVM shutdown, the framework waits up to 45 seconds for all pending compilations to finish automatically.
+In Ellithium 3.3.0, video encoding is completely non-blocking:
+- **CompletableFuture Pipeline**: When a test finishes, `stopRecording()` schedules the MP4 compilation on a background virtual thread pool, immediately returning execution control without freezing the test runner.
+- **Asynchronous Allure Attachment**: Allure video attachments are scheduled via `Reporter.attachVideoToReportAsync(compilationFuture, ...)` which streams the video into Allure as soon as compilation resolves, without delaying subsequent tests.
+- **Teardown Drain**: Upon suite completion or JVM shutdown, `VideoRecordingManager` automatically drains and awaits all in-flight compilations with a bounded timeout to ensure zero corrupted or missing video attachments.
+
+Call `ScreenRecorderActions.pendingCompilations()` at any point to query active background encoding jobs:
 
 ```java
 // Check pending compilations before suite teardown
 int pending = ScreenRecorderActions.pendingCompilations();
 if (pending > 0) {
-    System.out.println(pending + " video(s) still compiling...");
+    System.out.println(pending + " video(s) still compiling in background...");
 }
 ```
 

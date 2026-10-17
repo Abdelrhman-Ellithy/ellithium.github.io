@@ -16,7 +16,7 @@ The `config.properties` file contains core framework settings:
 retryCountOnFailure=0
 
 # Default timeout for waiting on elements (seconds)
-defaultElementWaitTimeout=0
+defaultElementWaitTimeout=5
 
 # Default polling interval for element checks (milliseconds)
 defaultElementPollingTime=50
@@ -29,6 +29,12 @@ attachRecordedGUITestExecutionToReport=true
 
 # Only attach the video when the test fails (reduces report size)
 attachRecordedGUITestExecutionToReportOnlyOnFailure=false
+
+# Live test execution progress bar in the terminal
+ellithium.progressbar.enabled=true
+
+# Real-time OS console window and tab title updates with test progress and ETA
+ellithium.progressbar.windowTitle.enabled=true
 ```
 
 ### Key Settings
@@ -36,11 +42,13 @@ attachRecordedGUITestExecutionToReportOnlyOnFailure=false
 | Property | Description | Default |
 |----------|-------------|---------|
 | `retryCountOnFailure` | Number of times to retry failed tests | 0 |
-| `defaultElementWaitTimeout` | Element wait timeout in seconds | 0 |
+| `defaultElementWaitTimeout` | Element wait timeout in seconds | 5 |
 | `defaultElementPollingTime` | Polling interval in milliseconds | 50 |
 | `recordGUITestExecution` | Enable automatic video recording of test execution | true |
 | `attachRecordedGUITestExecutionToReport` | Embed MP4 in Allure report | true |
 | `attachRecordedGUITestExecutionToReportOnlyOnFailure` | Only attach video on test failure | false |
+| `ellithium.progressbar.enabled` | Interactive console progress bar with dynamic terminal width adaptation | true |
+| `ellithium.progressbar.windowTitle.enabled` | Real-time terminal/window title updates with progress percentage and ETA | true |
 
 ## Allure Reporting Configuration
 

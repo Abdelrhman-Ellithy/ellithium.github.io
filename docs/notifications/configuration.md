@@ -15,6 +15,12 @@ The notification system is configured through the `notifications.properties` fil
 notifications.properties
 ```
 
+:::tip Modernized Notifications in v3.3.0
+- **Environment Variable Resolution**: Any configuration value can use dynamic `${ENV_VAR}` placeholders (e.g. `${SLACK_WEBHOOK_URL}`, `${EMAIL_PASSWORD}`) to avoid hardcoding secrets.
+- **Jakarta Mail Standard**: Modernized to Jakarta EE 10 standards with strict SMTP RFC 5321 CRLF line ending normalization.
+- **Native Lightweight Webhooks**: Slack alerts use direct HTTP JSON payloads without heavy third-party SDK dependencies.
+:::
+
 ## Basic Configuration
 
 ### Enable/Disable Notifications
